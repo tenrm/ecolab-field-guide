@@ -8,6 +8,7 @@
 - เว็บไซต์: https://tenrm.github.io/ecolab-field-guide/
 - `index.html` เนื้อหาคู่มือ + เครื่องมือคำนวณ (ความสูง, มวลชีวภาพ/คาร์บอนรายต้น, วิเคราะห์สังคมพืช)
 - `munsell.html` Munsell Soil Color Charts ออนไลน์
+- `appendix.html` ภาคผนวก: แบบบันทึกข้อมูลภาคสนาม 9 ส่วน (ต้นไม้ 1 นางต่อแถว) · `docs/ecolab-field-datasheets-2569.xlsx` แบบบันทึกเปล่า
 - `docs/` เอกสารประกอบ (PDF/XLSX) · `assets/` ภาพประกอบ
 
 หนังสือและคู่มือใน `docs/` เป็นลิขสิทธิ์ของเจ้าของผลงาน เผยแพร่เพื่อการศึกษา

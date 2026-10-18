@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>แบบบันทึกข้อมูลภาคสนาม</title>
+<meta name="description" content="ภาคผนวก: แบบบันทึกข้อมูลภาคสนาม ปฏิบัติการนิเวศวิทยา จุฬาฯ สระบุรี กรอกออนไลน์ บันทึกอัตโนมัติ ส่งออก Excel/CSV และพิมพ์แบบฟอร์มเปล่า">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: clipboard data sheets — a sticky action bar, then one numbered sheet per data type; tables scroll sideways on phones */
+:root{
+  --bg:#f1f3ef; --paper:#fbfcfa; --ink:#18201b; --muted:#59645c; --line:#d5dbd3;
+  --forest:#23513f; --forest-ink:#ffffff; --forest-soft:#dfe9e3;
+  --soil:#9a6427; --soil-soft:#f3e7d6; --calc:#eef2ed;
+  --warn:#9b3b1d; --warn-soft:#f6e1d8;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111613; --paper:#18201b; --ink:#e4ebe5; --muted:#9ba89e; --line:#2c3730;
+  --forest:#8cc5a8; --forest-ink:#0d1a13; --forest-soft:#1f3329;
+  --soil:#dca765; --soil-soft:#33281b; --calc:#1c2520; --warn:#f0a080; --warn-soft:#3a231b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111613; --paper:#18201b; --ink:#e4ebe5; --muted:#9ba89e; --line:#2c3730;
+  --forest:#8cc5a8; --forest-ink:#0d1a13; --forest-soft:#1f3329;
+  --soil:#dca765; --soil-soft:#33281b; --calc:#1c2520; --warn:#f0a080; --warn-soft:#3a231b; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:120px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.65 var(--f-body);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--paper)}
+a{color:var(--forest);text-underline-offset:3px}
+:focus-visible{outline:2px solid var(--soil);outline-offset:1px}
+h1,h2,h3{font-family:var(--f-display);line-height:1.25;margin:0;text-wrap:balance}
+p{margin:0}
+.muted{color:var(--muted)}.small{font-size:13.5px}.mono{font-family:var(--f-mono)}
+.support{background:var(--forest);color:var(--forest-ink);font-size:13.5px}
+.wrap{max-width:1280px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.support .wrap{padding-block:7px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+header.top .wrap{padding-block:24px 18px;display:grid;gap:6px}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--soil)}
+h1{font-size:clamp(28px,4.4vw,44px);font-weight:700}
+.lede{color:var(--muted);max-width:75ch}
+/* action bar */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:6;background:var(--paper);border-block:1px solid var(--line)}
+.bar .wrap{padding-block:8px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.jump{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1 1 360px;min-width:0}
+.jump a{white-space:nowrap;font-size:13px;text-decoration:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:3px 11px;background:var(--bg)}
+.jump a span{font-family:var(--f-mono);color:var(--soil);margin-right:4px}
+.jump a:hover{border-color:var(--forest)}
+.btn{font:500 13.5px var(--f-body);border:1px solid var(--forest);background:var(--forest);color:var(--forest-ink);border-radius:6px;padding:6px 12px;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+.btn.ghost{background:transparent;color:var(--forest)}
+.btn.warn{background:transparent;color:var(--warn);border-color:var(--warn)}
+.btn:hover{filter:brightness(1.08)}
+.actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.status{font-size:12.5px;color:var(--muted);min-width:9em}
+@media (max-width:760px){.bar{position:static}.actions .btn{padding:5px 10px;font-size:13px}html{scroll-padding-top:12px}}
+main.wrap{display:grid;gap:34px;padding-block:24px 64px}
+/* sheet */
+.sheet{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:14px;min-width:0}
+.sheet-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;justify-content:space-between}
+.sheet-head h2{font-size:21px;font-weight:700;display:flex;gap:10px;align-items:baseline}
+.sheet-head h2 .no{font-family:var(--f-mono);font-size:13px;color:var(--soil);font-weight:500}
+.hint{font-size:13.5px;color:var(--muted);max-width:90ch}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px 14px}
+.fields label{display:grid;gap:3px;font-size:13px;color:var(--muted)}
+.fields label.wide{grid-column:1/-1}
+input,select,textarea{font:14.5px var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px;padding:6px 8px;width:100%;min-width:0}
+textarea{min-height:64px;resize:vertical}
+input[type=number]{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.calcbox{display:flex;gap:10px;flex-wrap:wrap}
+.kpi{border:1px solid var(--line);border-radius:6px;padding:6px 10px;background:var(--calc);min-width:140px}
+.kpi small{display:block;color:var(--muted);font-size:12px}
+.kpi b{font-family:var(--f-mono);font-weight:500;font-size:17px}
+/* data table */
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--paper);-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:0;vertical-align:middle}
+th:last-child,td:last-child{border-right:0}
+thead th{background:var(--forest-soft);font-weight:600;padding:6px 6px;text-align:left;line-height:1.3;position:sticky;top:0;z-index:1}
+thead th small{display:block;font-weight:400;color:var(--muted);font-size:11.5px}
+td input,td select{border:0;border-radius:0;background:transparent;padding:6px 7px;height:34px}
+td input:focus,td select:focus{background:var(--soil-soft);outline:none;box-shadow:inset 0 0 0 2px var(--soil)}
+td.rn{font-family:var(--f-mono);font-size:12px;color:var(--muted);text-align:center;padding:0 6px;background:var(--bg)}
+td.c{background:var(--calc);font-family:var(--f-mono);font-size:13px;padding:0 8px;white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+td.c.bad{background:var(--warn-soft);color:var(--warn)}
+td.del button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 8px}
+td.del button:hover{color:var(--warn)}
+tr.bad td.rn{background:var(--warn-soft);color:var(--warn)}
+.tfoot{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border:1px solid var(--line);vertical-align:-2px;margin-right:4px}
+.note{border-left:3px solid var(--soil);background:var(--soil-soft);padding:9px 13px;border-radius:0 6px 6px 0;font-size:14px}
+.subq{display:grid;grid-template-columns:repeat(2,34px);gap:2px;font-family:var(--f-mono);font-size:12px;text-align:center}
+.subq span{border:1px solid var(--forest);padding:3px 0;border-radius:2px}
+footer{border-top:1px solid var(--line);background:var(--paper)}
+footer .wrap{padding-block:22px;font-size:13.5px;color:var(--muted);display:grid;gap:6px}
+footer b{color:var(--ink);font-family:var(--f-display);font-size:16px}
+#printArea{display:none}
+/* print */
+@media print{
+  @page{size:A4 landscape;margin:10mm}
+  body{background:#fff;color:#000;font-size:10.5pt}
+  .support,.bar,.no-print,footer,.tfoot,td.del,th.del,.legend{display:none!important}
+  header.top .wrap{padding:0 0 6px}
+  .sheet{border:0;padding:0;break-inside:auto;page-break-after:always}
+  .tbl{overflow:visible;border:0}
+  table{font-size:9pt}
+  th,td{border:1px solid #444!important}
+  thead th{background:#e8e8e8!important;position:static}
+  td input,td select{height:auto;padding:2px 4px;font-size:9pt;color:#000;-webkit-appearance:none;appearance:none}
+  td.c,td.rn{background:#f3f3f3!important;color:#000}
+  input,select,textarea{border:0;border-bottom:1px solid #888;border-radius:0;background:#fff;color:#000}
+  body.print-blank main,body.print-blank header.top{display:none}
+  body.print-blank #printArea{display:block}
+  #printArea section{page-break-after:always}
+  #printArea h2{font-size:14pt;margin:0 0 4px}
+  #printArea .ph{display:flex;gap:16px;flex-wrap:wrap;font-size:10pt;margin:4px 0 8px}
+  #printArea .ph span{border-bottom:1px solid #000;min-width:120px;display:inline-block}
+  #printArea td{height:7.2mm}
+  #printArea .sup{font-size:9pt;margin-top:4px}
+}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+</head>
+<body>
+<div class="support"><div class="wrap"><b>สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</b><a href="index.html" style="color:inherit">← กลับไปคู่มือปฏิบัติการนิเวศวิทยาภาคสนาม</a></div></div>
+
+<header class="top"><div class="wrap">
+  <div class="eyebrow">ภาคผนวก · Field Data Sheets</div>
+  <h1>แบบบันทึกข้อมูลภาคสนาม</h1>
+  <p class="lede">กรอกบนมือถือหรือคอมพิวเตอร์ได้ทันที ข้อมูลบันทึกอัตโนมัติในเบราว์เซอร์เครื่องนี้ ข้อมูลต้นไม้กรอก <b>1 นางต่อ 1 แถว</b> ต้นที่แตกหลายนางใช้หมายเลขป้ายเดียวกันแล้วเพิ่มลำดับนาง ช่องสีเทาคำนวณให้อัตโนมัติ เมื่อเสร็จให้ส่งออกเป็น Excel หรือส่งข้อมูลเข้าตัววิเคราะห์ในคู่มือ</p>
+</div></header>
+
+<div class="bar"><div class="wrap">
+  <nav class="jump" id="jump" aria-label="ไปยังแบบบันทึก"></nav>
+  <div class="actions">
+    <button class="btn" type="button" id="xlsxBtn">ส่งออก Excel</button>
+    <button class="btn ghost" type="button" id="toAnalyzer">ส่งเข้าตัววิเคราะห์</button>
+    <button class="btn ghost" type="button" id="printBlank">พิมพ์แบบฟอร์มเปล่า</button>
+    <button class="btn ghost" type="button" id="printFilled">พิมพ์ข้อมูลที่กรอก</button>
+    <button class="btn ghost" type="button" id="jsonOut">สำรอง .json</button>
+    <label class="btn ghost" for="jsonIn" style="cursor:pointer">นำเข้า .json</label><input type="file" id="jsonIn" accept=".json,application/json" hidden>
+    <button class="btn warn" type="button" id="clearAll">ล้างทั้งหมด</button>
+    <span class="status" id="status" aria-live="polite">พร้อมกรอก</span>
+  </div>
+</div></div>
+
+<main class="wrap" id="main"></main>
+<div id="printArea" aria-hidden="true"></div>
+
+<footer><div class="wrap">
+  <b>สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</b>
+  <p>ภาคผนวกของคู่มือปฏิบัติการนิเวศวิทยาภาคสนาม รายวิชา 2303222 ภาควิชาชีววิทยา คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย · ปรับจากตารางบันทึกข้อมูลในเอกสารประกอบการศึกษาภาคสนาม 2569</p>
+  <p>ข้อมูลที่กรอกเก็บไว้เฉพาะในเบราว์เซอร์ของเครื่องนี้ ไม่ถูกส่งไปที่ใด ควรส่งออก Excel หรือสำรอง .json เมื่อกรอกเสร็จ</p>
+</div></footer>
+
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const num=v=>{const x=parseFloat(v);return Number.isFinite(x)?x:NaN};
+const f=(x,d=1)=>Number.isFinite(x)?x.toFixed(d):'';
+const KEY='ecolab2569-forms-v1', AKEY='ecolab2569-analyzer-data';
+const PLOTS={A1:[0,40],A2:[20,40],A3:[0,60],A4:[20,60],A5:[40,0],A6:[60,0],A7:[40,20],B1:[60,20],B2:[80,40],B3:[100,40],B4:[80,60],B5:[100,60],B6:[40,80],B7:[60,80],B8:[40,100],B9:[60,100]};
+const subq=(x,y)=>(x>=0&&x<=20&&y>=0&&y<=20)?((y<10?0:2)+(x<10?1:2)):NaN;
+const origin=()=>PLOTS[state.info.plot]||null;
+
+/* ---------- schema ---------- */
+const S=[
+ {id:'info',no:'1',title:'ข้อมูลทั่วไปของกลุ่มและแปลง',type:'fields',hint:'กรอกก่อนเริ่มเก็บข้อมูล แปลงย่อยที่เลือกใช้คำนวณพิกัดรวมของต้นไม้ (ดูผังแปลงในคู่มือหัวข้อ 02)',
+  fields:[
+   ['group','กลุ่มที่','text'],['sec','ตอนเรียน / วันปฏิบัติการ','select',['','อังคาร','พฤหัสบดี','Section 1','Section 2']],
+   ['plot','แปลงย่อย (20 × 20 ม.)','select',['',...Object.keys(PLOTS)]],['date','วันที่','date'],['tStart','เวลาเริ่ม','time'],['tEnd','เวลาแล้วเสร็จ','time'],
+   ['recorder','ผู้บันทึกข้อมูล','text'],['elev','ความสูงจากระดับน้ำทะเล (ม.)','number'],['lat','ละติจูด (°)','number'],['lon','ลองจิจูด (°)','number'],
+   ['slope','ความลาดชัน (%)','number'],['aspect','ทิศด้านลาด','select',['','ราบ','N','NE','E','SE','S','SW','W','NW']],['canopy','การปกคลุมเรือนยอด (%) · Canopeo','number'],
+   ['weather','สภาพอากาศ','select',['','แดดจัด','มีเมฆบางส่วน','ครึ้ม','ฝนตก']],
+   ['members','สมาชิกกลุ่ม (ชื่อ–หน้าที่)','textarea'],['forest','สภาพป่าโดยทั่วไป','textarea'],['terrain','สภาพทางกายภาพ เช่น หินก้อนใหญ่ จอมปลวก ร่องน้ำ ร่องรอยไฟ','textarea']]},
+ {id:'climate',no:'2',title:'ปัจจัยทางกายภาพตามเวลา',type:'table',hint:'วัดทุก 30 นาทีตั้งแต่เริ่มจนเสร็จปฏิบัติการ ระบุความลึกที่วัดอุณหภูมิใต้ดินในช่องด้านล่าง',
+  extra:[['soilDepth','ความลึกที่วัดอุณหภูมิใต้ดิน (ซม.)','number']],
+  seed:()=>[0,30,60,90,120,150].map(m=>({min:m})),
+  cols:[{k:'min',l:'นาทีที่',t:'number',w:70},{k:'time',l:'เวลา',t:'time',w:96},{k:'airT',l:'อุณหภูมิอากาศ',u:'°C',t:'number',w:96},{k:'surfT',l:'อุณหภูมิผิวดิน',u:'°C',t:'number',w:96},{k:'soilT',l:'อุณหภูมิใต้ดิน',u:'°C',t:'number',w:96},{k:'rh',l:'ความชื้นสัมพัทธ์',u:'%',t:'number',w:96},{k:'note',l:'หมายเหตุ',t:'text',w:200}]},
+ {id:'soil',no:'3',title:'ดิน',type:'fields',hint:'ความชื้นดินคิดจากน้ำหนักแห้ง (dry-weight basis) อบ 105 °C 24 ชม. ไม่รวมน้ำหนักถุง/ภาชนะ สีดินดูได้จาก <a href="munsell.html">Munsell chart ออนไลน์</a>',
+  fields:[['ph','pH (pH paper)','number'],['colMoist','สีดิน Munsell สภาพชื้น เช่น 10YR 3/2','text'],['colDry','สีดิน Munsell สภาพแห้ง','text'],
+   ['texture','เนื้อดิน (ใช้มือสัมผัส)','select',['','ทราย','ทรายปนร่วน','ร่วนปนทราย','ร่วน','ร่วนปนทรายแป้ง','ร่วนเหนียว','ดินเหนียวปนทราย','ดินเหนียว']],
+   ['tare','น้ำหนักภาชนะ (ก.)','number'],['wetGross','น้ำหนักดินสด + ภาชนะ (ก.)','number'],['dryGross','น้ำหนักดินแห้ง + ภาชนะ (ก.)','number'],
+   ['soilNote','หมายเหตุ เช่น ชั้นหน้าดิน รากพืช ก้อนกรวด','textarea']],
+  calc:s=>{const t=num(s.tare)||0,w=num(s.wetGross)-t,d=num(s.dryGross)-t;return [['น้ำหนักดินสด (ก.)',f(w,2)],['น้ำหนักดินแห้ง (ก.)',f(d,2)],['ความชื้นดิน (%)',d>0?f((w-d)/d*100,1):'']]}},
+ {id:'tree',no:'4',title:'ต้นไม้ (Tree) · 1 นางต่อแถว',type:'table',stem:true,
+  hint:'Tree = DBH ≥ 4.5 ซม. (CBH ≥ 14.1 ซม.) และสูง ≥ 1.3 ม. ติดป้ายหมายเลข ต้นที่แตกหลายนางให้กรอกทีละนาง เรียงจากใหญ่ไปเล็ก ใช้หมายเลขป้ายเดียวกัน X, Y คือระยะจากมุมล่างซ้าย (0,0) ของแปลงย่อย 20 × 20 ม. ระบบคำนวณ quadrat ย่อย 10 × 10 ม. (1–4) และพิกัดรวมให้',
+  rows:15,cols:[
+   {k:'tag',l:'ป้ายหมายเลข',t:'text',w:78},{k:'stem',l:'นางที่',t:'number',w:58},{k:'sp',l:'ชื่อพรรณไม้',t:'text',w:160,list:'spList'},
+   {k:'x',l:'X',u:'ม. (0–20)',t:'number',w:66},{k:'y',l:'Y',u:'ม. (0–20)',t:'number',w:66},
+   {k:'_q',l:'Quadrat',u:'10×10',calc:'subq'},{k:'_g',l:'พิกัดรวม',u:'X, Y',calc:'global'},
+   {k:'cbh',l:'CBH',u:'ซม. ที่ 1.3 ม.',t:'number',w:78},{k:'h',l:'ความสูง',u:'ม.',t:'number',w:66},{k:'_d',l:'DBH',u:'ซม.',calc:'dbh'},
+   {k:'status',l:'สถานะ',t:'select',o:['มีชีวิต','ตาย','ถูกตัด/หัก'],w:96},{k:'sample',l:'ตัวอย่าง/ภาพ',t:'select',o:['','ถ่ายภาพ','เก็บตัวอย่าง','ถ่ายภาพ + เก็บตัวอย่าง'],w:120},
+   {k:'note',l:'หมายเหตุ / เลขภาพ',t:'text',w:170}]},
+ {id:'sapling',no:'5',title:'ไม้หนุ่มและไม้พุ่ม (Sapling/shrub) · 1 นางต่อแถว',type:'table',stem:true,
+  hint:'Sapling/shrub = DBH < 4.5 ซม. (CBH < 14.1 ซม.) และสูง ≥ 1.3 ม. ไม่ต้องติดป้าย ใช้รหัสต้น S1, S2, … เก็บใน quadrat 10 × 10 ม.',
+  rows:12,cols:[
+   {k:'tag',l:'รหัสต้น',t:'text',w:70,ph:'S1'},{k:'stem',l:'นางที่',t:'number',w:58},{k:'sp',l:'ชื่อพรรณไม้',t:'text',w:160,list:'spList'},
+   {k:'x',l:'X',u:'ม. (0–20)',t:'number',w:66},{k:'y',l:'Y',u:'ม. (0–20)',t:'number',w:66},{k:'_q',l:'Quadrat',u:'10×10',calc:'subq'},{k:'_g',l:'พิกัดรวม',u:'X, Y',calc:'global'},
+   {k:'cbh',l:'CBH',u:'ซม.',t:'number',w:70},{k:'h',l:'ความสูง',u:'ม.',t:'number',w:66},{k:'_d',l:'DBH',u:'ซม.',calc:'dbh'},
+   {k:'status',l:'สถานะ',t:'select',o:['มีชีวิต','ตาย'],w:90},{k:'note',l:'หมายเหตุ / เลขภาพ',t:'text',w:170}]},
+ {id:'bamboo',no:'6',title:'ไผ่ · 1 ลำต่อแถว',type:'table',
+  hint:'วัดทุกลำในกอ ถ้ากอมีมากกว่า 20 ลำให้วัด 20 ลำ และกรอกจำนวนลำทั้งหมดของกอในทุกแถวของกอนั้น (เกณฑ์ LESS) X, Y ระบุตำแหน่งกึ่งกลางกอ',
+  rows:8,cols:[
+   {k:'clump',l:'กอที่',t:'text',w:58},{k:'total',l:'จำนวนลำทั้งหมดในกอ',t:'number',w:96},{k:'culm',l:'ลำที่',t:'number',w:58},
+   {k:'sp',l:'ชนิดไผ่',t:'select',o:['','ไผ่บงป่า','ไผ่บงดำ','ไผ่ข้าวหลาม','ไผ่ไร่/ไผ่ผาก','ไม่ทราบชนิด'],w:126},
+   {k:'x',l:'X กอ',u:'ม.',t:'number',w:62},{k:'y',l:'Y กอ',u:'ม.',t:'number',w:62},{k:'cbh',l:'CBH',u:'ซม.',t:'number',w:70},{k:'_d',l:'DBH',u:'ซม.',calc:'dbh'},
+   {k:'_b',l:'AGB',u:'kg (Zemek)',calc:'bamboo'},{k:'note',l:'หมายเหตุ',t:'text',w:160}]},
+ {id:'litter',no:'7',title:'เศษซากพืช (litter) · quadrat 1 × 1 ม.',type:'table',
+  hint:'ชั่งน้ำหนักสดของ litter ทั้งหมดทันที แบ่งราว 100 ก. ไปอบ แล้วกรอกน้ำหนักแห้งของตัวอย่างภายหลัง ระบบคิดน้ำหนักแห้งต่อพื้นที่ให้',
+  seed:()=>[1,2,3,4].map(i=>({q:String(i)})),
+  cols:[{k:'q',l:'Quadrat ที่',t:'text',w:70},{k:'pos',l:'ตำแหน่ง',t:'select',o:['','สุ่ม','มุม SW','มุม SE','มุม NW','มุม NE'],w:100},
+   {k:'fresh',l:'นน.สดทั้งหมด',u:'ก.',t:'number',w:96},{k:'subF',l:'นน.สดตัวอย่างที่อบ',u:'ก.',t:'number',w:110},{k:'subD',l:'นน.แห้งตัวอย่าง',u:'ก.',t:'number',w:100},
+   {k:'_dw',l:'นน.แห้งทั้งหมด',u:'ก./ตร.ม.',calc:'litterDry'},{k:'_t',l:'Litter',u:'t/ha',calc:'litterT'},{k:'note',l:'หมายเหตุ',t:'text',w:170}]},
+ {id:'fauna',no:'8',title:'สัตว์ในดิน (soil fauna)',type:'table',
+  hint:'Macro-soil fauna จาก quadrat 1 × 1 ม. (คุ้ยใบไม้และดิน) · Meso-soil fauna จากดิน 20 × 20 ซม. ลึก 5 ซม. ที่สกัดด้วย Tullgren funnel ถ่ายภาพแล้วปล่อยคืนที่เดิม',
+  rows:10,cols:[{k:'type',l:'ประเภท',t:'select',o:['macro','meso'],w:90},{k:'name',l:'ชื่อสัตว์ / กลุ่มอนุกรมวิธาน',t:'text',w:200},
+   {k:'n',l:'จำนวนที่พบ',u:'ตัว',t:'number',w:84},{k:'wt',l:'น้ำหนักรวม',u:'ก.',t:'number',w:84},{k:'_m',l:'น้ำหนักเฉลี่ย',u:'ก./ตัว',calc:'meanW'},
+   {k:'photo',l:'เลขภาพถ่าย',t:'text',w:100},{k:'note',l:'หมายเหตุ',t:'text',w:180}]},
+ {id:'trail',no:'9',title:'เส้นทางศึกษาธรรมชาติ · จุดสำรวจ',type:'table',
+  hint:'บันทึกทุกจุดที่น่าสนใจตามแนว belt transect ใช้พิกัดจาก GPS Essentials และระบุรหัส observation ใน iNaturalist (โครงการ Flora and Fauna of Chula Saraburi)',
+  extra:[['trailNo','เส้นทางที่','select',['','เส้นที่ 1','เส้นที่ 2']],['trailLen','ความยาวเส้นทางทั้งหมด (ม.)','number']],
+  rows:8,cols:[{k:'pt',l:'จุดที่',t:'text',w:54},{k:'time',l:'เวลา',t:'time',w:92},{k:'lat',l:'ละติจูด',t:'number',w:100},{k:'lon',l:'ลองจิจูด',t:'number',w:100},
+   {k:'dist',l:'ระยะสะสม',u:'ม.',t:'number',w:80},{k:'eco',l:'ลักษณะระบบนิเวศ',t:'text',w:160},{k:'soil',l:'ดิน (เนื้อดิน/สี)',t:'text',w:130},
+   {k:'org',l:'สิ่งมีชีวิตเด่น/น่าสนใจ',t:'text',w:180},{k:'fn',l:'หน้าที่ระบบนิเวศ',t:'select',o:['','regulation','habitat','production','information'],w:120},
+   {k:'dist2',l:'การรบกวน',t:'text',w:130},{k:'inat',l:'รหัส iNaturalist',t:'text',w:110},{k:'note',l:'หมายเหตุ',t:'text',w:150}]}
+];
+
+/* ---------- state ---------- */
+let state={};
+function blank(){const s={};S.forEach(sec=>{if(sec.type==='fields')s[sec.id]={};else{s[sec.id]=sec.seed?sec.seed():Array.from({length:sec.rows||5},()=>({}));s[sec.id+'_x']={}}});return s}
+try{state=JSON.parse(localStorage.getItem(KEY)||'null')||blank()}catch(e){state=blank()}
+S.forEach(sec=>{if(!state[sec.id])state[sec.id]=blank()[sec.id];if(sec.type==='table'&&!state[sec.id+'_x'])state[sec.id+'_x']={}});
+let tm;function save(){clearTimeout(tm);$('status').textContent='กำลังบันทึก…';tm=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(state));$('status').textContent='บันทึกแล้ว '+new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'})}catch(e){$('status').textContent='บันทึกในเครื่องไม่ได้ · โปรดส่งออก Excel'}},350)}
+
+/* ---------- calc ---------- */
+const CALC={
+ subq:r=>{const q=subq(num(r.x),num(r.y));return{v:Number.isFinite(q)?String(q):'',bad:(r.x!==undefined&&r.x!==''&&r.y!==''&&r.y!==undefined&&!Number.isFinite(q))}},
+ global:r=>{const o=origin(),x=num(r.x),y=num(r.y);return{v:(o&&Number.isFinite(x)&&Number.isFinite(y))?`${f(o[0]+x)}, ${f(o[1]+y)}`:''}},
+ dbh:r=>{const c=num(r.cbh);return{v:c>0?f(c/Math.PI,1):''}},
+ bamboo:r=>{const c=num(r.cbh);return{v:c>0?f(0.5081*Math.pow(c/Math.PI,1.8595),2):''}},
+ litterDry:r=>{const a=num(r.fresh),b=num(r.subF),c=num(r.subD);return{v:(a>0&&b>0&&c>=0)?f(a*c/b,1):''}},
+ litterT:r=>{const a=num(r.fresh),b=num(r.subF),c=num(r.subD);return{v:(a>0&&b>0&&c>=0)?f(a*c/b*0.01,2):''}},
+ meanW:r=>{const n=num(r.n),w=num(r.wt);return{v:(n>0&&w>=0)?f(w/n,3):''}}
+};
+function classWarn(sec,rows){ // flag stems whose individual is in the wrong class
+  if(!sec.stem)return new Set();const maxD={};rows.forEach(r=>{const c=num(r.cbh);if(r.tag&&c>0)maxD[r.tag]=Math.max(maxD[r.tag]||0,c/Math.PI)});
+  const bad=new Set();rows.forEach((r,i)=>{const d=maxD[r.tag];if(d===undefined)return;if(sec.id==='tree'&&d<4.5)bad.add(i);if(sec.id==='sapling'&&d>=4.5)bad.add(i)});return bad}
+
+/* ---------- render ---------- */
+const main=$('main');
+$('jump').innerHTML=S.map(s=>`<a href="#${s.id}"><span>${s.no}</span>${esc(s.title.split(' · ')[0])}</a>`).join('');
+function fieldHTML(secId,[k,l,t,o],store){const id=`${secId}-${k}`,v=esc(store[k]??''),wide=t==='textarea'?' class="wide"':'';
+  if(t==='select')return`<label${wide} for="${id}">${l}<select id="${id}" data-f="${secId}" data-k="${k}">${o.map(x=>`<option${String(store[k]??'')===x?' selected':''}>${esc(x)}</option>`).join('')}</select></label>`;
+  if(t==='textarea')return`<label${wide} for="${id}">${l}<textarea id="${id}" data-f="${secId}" data-k="${k}">${v}</textarea></label>`;
+  return`<label for="${id}">${l}<input id="${id}" type="${t}" ${t==='number'?'step="any" inputmode="decimal"':''} value="${v}" data-f="${secId}" data-k="${k}"></label>`}
+function build(){
+  main.innerHTML=S.map(sec=>{
+    let h=`<section class="sheet" id="${sec.id}"><div class="sheet-head"><h2><span class="no">${sec.no}</span>${esc(sec.title)}</h2>`;
+    if(sec.type==='table')h+=`<span class="small muted" id="cnt-${sec.id}"></span>`;
+    h+=`</div><p class="hint">${sec.hint}</p>`;
+    if(sec.type==='fields'){h+=`<div class="fields">${sec.fields.map(fd=>fieldHTML(sec.id,fd,state[sec.id])).join('')}</div>`;if(sec.calc)h+=`<div class="calcbox" id="calc-${sec.id}"></div>`}
+    else{
+      if(sec.extra)h+=`<div class="fields">${sec.extra.map(fd=>fieldHTML(sec.id+'_x',fd,state[sec.id+'_x'])).join('')}</div>`;
+      if(sec.stem)h+=`<div class="row no-print" style="display:flex;gap:14px;align-items:center;flex-wrap:wrap"><div class="subq" aria-label="หมายเลข quadrat ย่อย"><span>3</span><span>4</span><span>1</span><span>2</span></div><span class="small muted">quadrat ย่อย 10 × 10 ม. ในแปลง 20 × 20 ม. (มุมล่างซ้าย = 0,0) · แปลงย่อย: <b id="org-${sec.id}"></b></span></div>`;
+      h+=`<div class="tbl"><table data-t="${sec.id}"><thead><tr><th style="width:36px">#</th>${sec.cols.map(c=>`<th style="min-width:${c.w||74}px">${esc(c.l)}${c.u?`<small>${esc(c.u)}</small>`:''}</th>`).join('')}<th class="del" style="width:36px"><span class="sr" style="font-size:0">ลบ</span></th></tr></thead><tbody></tbody></table></div>
+        <div class="tfoot"><div class="actions"><button class="btn ghost" type="button" data-add="${sec.id}">+ เพิ่ม 1 แถว</button><button class="btn ghost" type="button" data-add5="${sec.id}">+ 5 แถว</button>${sec.stem?`<button class="btn ghost" type="button" data-nextstem="${sec.id}">+ นางถัดไปของต้นล่าสุด</button>`:''}<button class="btn ghost" type="button" data-csv="${sec.id}">CSV</button></div>
+        <div class="legend"><span><i style="background:var(--calc)"></i>คำนวณอัตโนมัติ</span><span><i style="background:var(--warn-soft)"></i>ตรวจสอบค่า (ขนาดไม่ตรงกลุ่ม หรือพิกัดเกิน 0–20 ม.)</span></div></div>`}
+    return h+'</section>'}).join('')+`<datalist id="spList"></datalist>`;
+  S.filter(s=>s.type==='table').forEach(renderTable);S.filter(s=>s.calc).forEach(renderCalc);refreshSpecies();
+}
+function cellHTML(sec,c,r,i){if(c.calc)return`<td class="c" data-c="${c.k}"></td>`;const v=esc(r[c.k]??''),lab=`${c.l} แถว ${i+1}`;
+  if(c.t==='select')return`<td><select aria-label="${esc(lab)}" data-r="${i}" data-k="${c.k}">${c.o.map(x=>`<option${String(r[c.k]??'')===x?' selected':''}>${esc(x)}</option>`).join('')}</select></td>`;
+  return`<td><input aria-label="${esc(lab)}" type="${c.t}" ${c.t==='number'?'step="any" inputmode="decimal"':''} ${c.list?`list="${c.list}"`:''} ${c.ph?`placeholder="${c.ph}"`:''} value="${v}" data-r="${i}" data-k="${c.k}"></td>`}
+function renderTable(sec){const rows=state[sec.id],tb=document.querySelector(`table[data-t="${sec.id}"] tbody`);
+  tb.innerHTML=rows.map((r,i)=>`<tr data-i="${i}"><td class="rn">${i+1}</td>${sec.cols.map(c=>cellHTML(sec,c,r,i)).join('')}<td class="del"><button type="button" aria-label="ลบแถว ${i+1}" data-del="${i}">×</button></td></tr>`).join('');
+  updateCalc(sec)}
+function updateCalc(sec){const rows=state[sec.id],tb=document.querySelector(`table[data-t="${sec.id}"] tbody`),bad=classWarn(sec,rows);
+  tb.querySelectorAll('tr').forEach((tr,i)=>{const r=rows[i];let rowBad=bad.has(i);tr.querySelectorAll('td.c').forEach(td=>{const c=sec.cols.find(x=>x.k===td.dataset.c);const o=CALC[c.calc](r);td.textContent=o.v;td.classList.toggle('bad',!!o.bad);if(o.bad)rowBad=true});tr.classList.toggle('bad',rowBad)});
+  const filled=rows.filter(r=>Object.entries(r).some(([k,v])=>v!==''&&v!==undefined&&!(sec.seed&&(k==='min'||k==='q')))).length;
+  const ce=$('cnt-'+sec.id);if(ce)ce.textContent=sec.stem?`${filled} นาง · ${new Set(rows.filter(r=>r.tag).map(r=>r.tag)).size} ต้น`:`${filled} แถวที่มีข้อมูล`;
+  const oe=$('org-'+sec.id);if(oe){const o=origin();oe.textContent=state.info.plot?`${state.info.plot} (x₀ = ${o[0]}, y₀ = ${o[1]})`:'ยังไม่ได้เลือกในส่วนที่ 1'}}
+function renderCalc(sec){$('calc-'+sec.id).innerHTML=sec.calc(state[sec.id]).map(([l,v])=>`<div class="kpi"><small>${l}</small><b>${v||'–'}</b></div>`).join('')}
+function refreshSpecies(){const sp=new Set();['tree','sapling'].forEach(k=>state[k].forEach(r=>r.sp&&sp.add(r.sp.trim())));$('spList').innerHTML=[...sp].sort().map(s=>`<option value="${esc(s)}">`).join('')}
+
+/* ---------- events ---------- */
+main.addEventListener('input',e=>{const t=e.target;
+  if(t.dataset.f){state[t.dataset.f][t.dataset.k]=t.value;const sec=S.find(s=>s.id===t.dataset.f);if(sec&&sec.calc)renderCalc(sec);
+    if(t.dataset.f==='info'&&t.dataset.k==='plot')S.filter(s=>s.stem).forEach(updateCalc);save();return}
+  const tbl=t.closest('table[data-t]');if(!tbl)return;const sec=S.find(s=>s.id===tbl.dataset.t);state[sec.id][+t.dataset.r][t.dataset.k]=t.value;updateCalc(sec);save()});
+main.addEventListener('change',e=>{if(e.target.dataset.k==='sp')refreshSpecies()});
+main.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+  const add=(id,n,mk)=>{const sec=S.find(s=>s.id===id);for(let i=0;i<n;i++)state[id].push(mk?mk():{});renderTable(sec);save();const rows=document.querySelectorAll(`table[data-t="${id}"] tbody tr`);const inp=rows[rows.length-n]&&rows[rows.length-n].querySelector('input,select');if(inp)inp.focus()};
+  if(b.dataset.add)add(b.dataset.add,1);
+  if(b.dataset.add5)add(b.dataset.add5,5);
+  if(b.dataset.nextstem){const id=b.dataset.nextstem,rows=state[id];const last=[...rows].reverse().find(r=>r.tag);if(!last){$('status').textContent='ยังไม่มีต้นที่กรอกหมายเลข';return}
+    const st=Math.max(...rows.filter(r=>r.tag===last.tag).map(r=>num(r.stem)||1));add(id,1,()=>({tag:last.tag,stem:String(st+1),sp:last.sp,x:last.x,y:last.y,status:last.status}))}
+  if(b.dataset.del!==undefined){const tbl=b.closest('table[data-t]'),id=tbl.dataset.t,i=+b.dataset.del,r=state[id][i];
+    const has=Object.values(r).some(v=>v!==''&&v!==undefined);if(has&&!confirm(`ลบแถว ${i+1} ?`))return;state[id].splice(i,1);renderTable(S.find(s=>s.id===id));save()}
+  if(b.dataset.csv)downloadCSV(b.dataset.csv)});
+
+/* ---------- export ---------- */
+function tableAOA(sec){const head=sec.cols.map(c=>c.l+(c.u?` (${c.u})`:''));const rows=state[sec.id].filter(r=>sec.cols.some(c=>!c.calc&&r[c.k]!==''&&r[c.k]!==undefined));
+  return[head,...rows.map(r=>sec.cols.map(c=>{if(c.calc)return CALC[c.calc](r).v;const v=r[c.k]??'';return c.t==='number'&&v!==''&&Number.isFinite(+v)?+v:v}))]}
+function fieldsAOA(){const out=[['หัวข้อ','ค่า']];S.forEach(sec=>{const flds=sec.type==='fields'?sec.fields:(sec.extra||[]),store=sec.type==='fields'?state[sec.id]:state[sec.id+'_x'];
+  flds.forEach(([k,l])=>out.push([`${sec.no}. ${l}`,store[k]??'']));if(sec.calc)sec.calc(state[sec.id]).forEach(([l,v])=>out.push([`${sec.no}. ${l}`,v]))});return out}
+function fname(ext){const i=state.info;return`EcoLab2569_กลุ่ม${i.group||'-'}_${i.plot||'แปลง'}_${(i.date||new Date().toISOString().slice(0,10))}.${ext}`}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},500)}
+const csvCell=v=>{v=String(v??'');return/[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+function downloadCSV(id){const sec=S.find(s=>s.id===id);const aoa=tableAOA(sec);dl(new Blob(['﻿'+aoa.map(r=>r.map(csvCell).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}),fname(id+'.csv'))}
+$('xlsxBtn').addEventListener('click',()=>{if(!window.XLSX){$('status').textContent='โหลดไลบรารี Excel ไม่สำเร็จ ใช้ปุ่ม CSV ของแต่ละตารางแทน';return}
+  const wb=XLSX.utils.book_new();const ws0=XLSX.utils.aoa_to_sheet(fieldsAOA());ws0['!cols']=[{wch:44},{wch:40}];XLSX.utils.book_append_sheet(wb,ws0,'1-ทั่วไป');
+  S.filter(s=>s.type==='table').forEach(sec=>{const ws=XLSX.utils.aoa_to_sheet(tableAOA(sec));ws['!cols']=sec.cols.map(c=>({wch:Math.max(8,Math.round((c.w||80)/7))}));XLSX.utils.book_append_sheet(wb,ws,`${sec.no}-${sec.title.split(' ')[0].slice(0,20)}`)});
+  XLSX.writeFile(wb,fname('xlsx'));$('status').textContent='ส่งออก Excel แล้ว'});
+$('jsonOut').addEventListener('click',()=>dl(new Blob([JSON.stringify({app:'ecolab2569-forms',v:1,saved:new Date().toISOString(),data:state},null,1)],{type:'application/json'}),fname('json')));
+$('jsonIn').addEventListener('change',e=>{const file=e.target.files[0];if(!file)return;const rd=new FileReader();rd.onload=()=>{try{const j=JSON.parse(rd.result);const d=j.data||j;if(!d.info||!d.tree)throw 0;
+  if(!confirm('แทนที่ข้อมูลในหน้านี้ด้วยไฟล์ที่เลือก?'))return;state=Object.assign(blank(),d);build();save();$('status').textContent='นำเข้าข้อมูลแล้ว'}catch(err){$('status').textContent='ไฟล์นี้ไม่ใช่ไฟล์สำรองของแบบบันทึก'}};rd.readAsText(file);e.target.value=''});
+$('clearAll').addEventListener('click',()=>{if(!confirm('ล้างข้อมูลทุกตาราง? ควรส่งออก Excel หรือสำรอง .json ก่อน'))return;state=blank();build();save()});
+$('toAnalyzer').addEventListener('click',()=>{const plot=state.info.plot||'P';const lines=['quadrat\ttag\tspecies\tcbh_cm\th_m'];let n=0;
+  [['tree','T'],['sapling','S']].forEach(([id,p])=>state[id].forEach((r,i)=>{if(!r.sp||!(num(r.cbh)>0)||!(num(r.h)>0)||(r.status&&r.status!=='มีชีวิต'))return;
+    const q=subq(num(r.x),num(r.y));lines.push([`${plot}-${Number.isFinite(q)?q:'?'}`,(p==='T'?'T'+(r.tag||('r'+i)):(r.tag||('S'+i))),r.sp.trim(),r.cbh,r.h].join('\t'));n++}));
+  if(!n){$('status').textContent='ยังไม่มีแถวที่มีชื่อพรรณไม้ CBH และความสูงครบ';return}
+  try{localStorage.setItem(AKEY,JSON.stringify({text:lines.join('\n'),from:`กลุ่ม ${state.info.group||'-'} แปลง ${plot}`,at:Date.now()}))}catch(e){$('status').textContent='ส่งข้อมูลไม่ได้ ใช้การคัดลอก CSV แทน';return}
+  location.href='index.html#analysis'});
+
+/* ---------- print ---------- */
+$('printFilled').addEventListener('click',()=>{document.body.classList.remove('print-blank');window.print()});
+$('printBlank').addEventListener('click',()=>{
+  const head=`<div class="ph">กลุ่มที่ <span></span> ตอนเรียน <span></span> แปลงย่อย <span></span> วันที่ <span></span> ผู้บันทึก <span></span></div>`;
+  const blankRows={climate:6,tree:22,sapling:22,bamboo:22,litter:4,fauna:22,trail:20};
+  let h='';S.forEach(sec=>{h+=`<section><h2>${sec.no}. ${esc(sec.title)}</h2>${head}<p style="font-size:9pt;margin:0 0 6px">${sec.hint.replace(/<[^>]+>/g,'')}</p>`;
+    if(sec.type==='fields'){h+=`<table><tbody>${sec.fields.map(([k,l,t])=>`<tr><td style="width:38%;padding:4px 6px">${esc(l)}</td><td style="height:${t==='textarea'?'18mm':'8mm'}"></td></tr>`).join('')}</tbody></table>`}
+    else{const cols=sec.cols.filter(c=>!c.calc||c.calc==='dbh'||c.calc==='subq');if(sec.extra)h+=`<p style="font-size:10pt">${sec.extra.map(x=>esc(x[1])+' ................').join('   ')}</p>`;
+      h+=`<table><thead><tr><th>#</th>${cols.map(c=>`<th>${esc(c.l)}${c.u?`<br><small>${esc(c.u)}</small>`:''}</th>`).join('')}</tr></thead><tbody>`;
+      const seed=sec.seed?sec.seed():[];for(let i=0;i<(blankRows[sec.id]||15);i++)h+=`<tr><td style="width:7mm;text-align:center">${i+1}</td>${cols.map(c=>`<td>${esc(seed[i]&&seed[i][c.k]!==undefined?seed[i][c.k]:'')}</td>`).join('')}</tr>`;h+='</tbody></table>'}
+    h+=`<p class="sup">สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย · แบบบันทึกข้อมูลภาคสนาม ปฏิบัติการนิเวศวิทยา 2569</p></section>`});
+  $('printArea').innerHTML=h;document.body.classList.add('print-blank');window.print();setTimeout(()=>document.body.classList.remove('print-blank'),800)});
+window.addEventListener('afterprint',()=>document.body.classList.remove('print-blank'));
+
+build();
+})();
+</script>
+</body>
+</html>
