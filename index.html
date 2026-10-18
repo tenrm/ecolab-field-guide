@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คู่มือปฏิบัติการนิเวศวิทยาภาคสนาม</title>
+<meta name="description" content="คู่มือออนไลน์ปฏิบัติการนิเวศวิทยาภาคสนาม (2303222) ณ จุฬาลงกรณ์มหาวิทยาลัย สระบุรี: แปลงถาวร เส้นทางศึกษาธรรมชาติ การคำนวณคาร์บอนแบบ LESS และเอกสารประกอบ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: field-notebook — sticky table of contents on the left, numbered protocol sections on the right; one column on phones */
+:root{
+  --bg:#f1f3ef; --paper:#fbfcfa; --ink:#18201b; --muted:#59645c; --line:#d5dbd3;
+  --forest:#23513f; --forest-ink:#ffffff; --forest-soft:#dfe9e3;
+  --soil:#9a6427; --soil-soft:#f3e7d6; --grid:#c9d3cb; --gridf:#e4e9e3;
+  --warn:#9b3b1d; --warn-soft:#f6e1d8;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111613; --paper:#18201b; --ink:#e4ebe5; --muted:#9ba89e; --line:#2c3730;
+  --forest:#8cc5a8; --forest-ink:#0d1a13; --forest-soft:#1f3329;
+  --soil:#dca765; --soil-soft:#33281b; --grid:#34423a; --gridf:#1e2822; --warn:#f0a080; --warn-soft:#3a231b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111613; --paper:#18201b; --ink:#e4ebe5; --muted:#9ba89e; --line:#2c3730;
+  --forest:#8cc5a8; --forest-ink:#0d1a13; --forest-soft:#1f3329;
+  --soil:#dca765; --soil-soft:#33281b; --grid:#34423a; --gridf:#1e2822; --warn:#f0a080; --warn-soft:#3a231b; color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.75 var(--f-body);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+img{max-width:100%;height:auto;display:block}
+a{color:var(--forest);text-underline-offset:3px}
+a:hover{color:var(--soil)}
+:focus-visible{outline:2px solid var(--soil);outline-offset:2px}
+h1,h2,h3,h4{font-family:var(--f-display);line-height:1.25;text-wrap:balance;margin:0}
+h2{font-size:clamp(24px,3.2vw,32px);font-weight:700}
+h3{font-size:19px;font-weight:600}
+h4{font-size:16px;font-weight:600}
+p{margin:0}
+.mono{font-family:var(--f-mono)}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+
+/* support band */
+.support{background:var(--forest);color:var(--forest-ink)}
+.support .in{max-width:1240px;margin:0 auto;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));font-size:14px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+/* hero */
+.hero{border-bottom:1px solid var(--line);background:
+  linear-gradient(var(--gridf) 1px,transparent 1px) 0 0/40px 40px,
+  linear-gradient(90deg,var(--gridf) 1px,transparent 1px) 0 0/40px 40px, var(--paper);background-blend-mode:normal}
+.hero .in{max-width:1240px;margin:0 auto;padding-block:40px 36px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:32px;align-items:end}
+@media (max-width:860px){.hero .in{grid-template-columns:minmax(0,1fr)}}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--soil)}
+.hero h1{font-size:clamp(32px,5.4vw,56px);font-weight:700;margin-top:6px}
+.hero .lede{margin-top:14px;max-width:62ch;color:var(--muted);font-size:17px}
+.hero .facts{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:16px 18px;display:grid;gap:8px;font-size:14.5px}
+.facts dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;font-weight:500}
+/* shell */
+.shell{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px;padding-block:28px 64px}
+@media (max-width:980px){.shell{grid-template-columns:minmax(0,1fr);gap:20px}}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;font-size:14.5px}
+nav.toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px;counter-reset:t}
+nav.toc a{display:flex;gap:10px;text-decoration:none;color:var(--muted);padding:5px 10px;border-radius:5px;border-left:2px solid transparent}
+nav.toc a span.n{font-family:var(--f-mono);font-size:12px;color:var(--soil);min-width:18px;padding-top:3px}
+nav.toc a:hover{color:var(--ink);background:var(--forest-soft)}
+nav.toc a.on{color:var(--ink);border-left-color:var(--forest);background:var(--forest-soft);font-weight:500}
+.toc-title{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px 10px}
+@media (max-width:980px){
+  nav.toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);margin:0 calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:8px max(16px,env(safe-area-inset-left,0px));border-bottom:1px solid var(--line)}
+  .toc-title{display:none}
+  nav.toc ol{display:flex;overflow-x:auto;gap:6px;scrollbar-width:none;position:relative}
+  nav.toc a{white-space:nowrap;border:1px solid var(--line);border-radius:999px;padding:4px 12px;background:var(--paper)}
+  nav.toc a.on{border-color:var(--forest)}
+}
+main{display:grid;gap:56px;min-width:0}
+section.sec{display:grid;gap:18px;min-width:0}
+.sec-head{display:grid;gap:4px;border-top:2px solid var(--ink);padding-top:14px}
+.sec-no{font-family:var(--f-mono);font-size:13px;color:var(--soil);letter-spacing:.06em}
+.prose{display:grid;gap:12px;max-width:72ch}
+.prose ul,.prose ol{margin:0;padding-left:22px;display:grid;gap:4px}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px;min-width:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:760px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+figure{margin:0;display:grid;gap:8px}
+figure img{border:1px solid var(--line);border-radius:6px;background:#fff}
+figcaption{font-size:13.5px;color:var(--muted)}
+.note{border-left:3px solid var(--soil);background:var(--soil-soft);padding:10px 14px;border-radius:0 6px 6px 0;font-size:15px}
+.note.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);background:var(--paper);color:var(--muted);white-space:nowrap}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:600;background:var(--forest-soft);white-space:nowrap}
+td.num,th.num{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+/* steps */
+ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
+ol.steps>li{counter-increment:s;display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px}
+ol.steps>li::before{content:counter(s);font-family:var(--f-mono);font-weight:500;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--forest);color:var(--forest);display:grid;place-items:center;font-size:14px;margin-top:2px}
+ol.steps>li>div{display:grid;gap:6px;min-width:0}
+ol.steps ul{margin:0;padding-left:20px}
+/* formula */
+.f{font-family:var(--f-mono);font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;white-space:pre;line-height:1.6}
+/* plot map */
+.plotmap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.plotmap{grid-template-columns:minmax(0,1fr)}}
+.plotmap svg{width:100%;height:auto;background:var(--paper);border:1px solid var(--line);border-radius:6px}
+.plotmap svg text{font-family:var(--f-mono);fill:var(--muted)}
+.cell{cursor:pointer}
+.cell rect{fill:var(--forest-soft);stroke:var(--forest);stroke-width:.6}
+.cell text{fill:var(--ink);font-size:6px;font-weight:600}
+.cell:hover rect,.cell.on rect{fill:var(--soil)}
+.cell.on text,.cell:hover text{fill:#fff}
+.cell:focus-visible{outline:none}.cell:focus-visible rect{stroke:var(--soil);stroke-width:1.6}
+/* checklist */
+.check{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.check label{display:flex;gap:10px;align-items:flex-start;padding:5px 6px;border-radius:5px;cursor:pointer}
+.check label:hover{background:var(--forest-soft)}
+.check input{margin-top:6px;accent-color:var(--forest);width:16px;height:16px;flex:none}
+.check .q{margin-left:auto;font-size:13px;color:var(--muted);text-align:right}
+.check input:checked+span{text-decoration:line-through;color:var(--muted)}
+.prog{height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--forest);width:0;transition:width .2s}
+/* tools */
+.tool{display:grid;gap:12px}
+.fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.fields label{display:grid;gap:3px;font-size:13.5px;color:var(--muted)}
+input[type=number],input[type=text],select,textarea{font:15px var(--f-body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px 9px;width:100%}
+textarea{font-family:var(--f-mono);font-size:13px;min-height:190px;resize:vertical}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.kpi{border:1px solid var(--line);border-radius:6px;padding:8px 10px;background:var(--bg)}
+.kpi small{display:block;color:var(--muted);font-size:12.5px}
+.kpi b{font-family:var(--f-mono);font-size:19px;font-weight:500;font-variant-numeric:tabular-nums}
+.btn{font:500 14px var(--f-body);border:1px solid var(--forest);background:var(--forest);color:var(--forest-ink);border-radius:6px;padding:7px 14px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--forest)}
+.btn:hover{filter:brightness(1.08)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button{font:500 14px var(--f-body);border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:5px 14px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--forest);border-color:var(--forest);color:var(--forest-ink)}
+.hist{display:grid;gap:4px}
+.hist .b{display:grid;grid-template-columns:72px minmax(0,1fr) 36px;gap:8px;align-items:center;font-size:13px}
+.hist .bar{height:16px;background:var(--forest);border-radius:2px;min-width:1px}
+.hist .lab{font-family:var(--f-mono);color:var(--muted)}
+.hist .v{font-family:var(--f-mono);text-align:right}
+/* library */
+.lib{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.doc{background:var(--paper);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:grid;grid-template-rows:auto 1fr;text-decoration:none;color:var(--ink)}
+.doc:hover{border-color:var(--forest)}
+.doc .cov{aspect-ratio:3/4;background:var(--forest-soft);display:grid;place-items:center;overflow:hidden;max-width:100%}
+.doc .cov img{width:100%;height:100%;object-fit:cover;border:0;border-radius:0}
+.doc .cov.txt{font-family:var(--f-display);font-weight:700;font-size:30px;color:var(--forest);padding:16px;text-align:center;line-height:1.15}
+.doc .meta{padding:12px 14px;display:grid;gap:4px;align-content:start}
+.doc h4{font-size:15px}
+.doc .by{font-size:13px;color:var(--muted)}
+.doc .dl{font-family:var(--f-mono);font-size:12px;color:var(--soil);margin-top:4px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.links a{display:grid;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);text-decoration:none;color:var(--ink)}
+.links a:hover{border-color:var(--forest)}
+.links small{color:var(--muted);font-size:13px}
+.timeline{display:grid;gap:0;border-left:2px solid var(--forest);margin-left:6px}
+.timeline .t{position:relative;padding:0 0 14px 20px;display:grid;gap:2px}
+.timeline .t::before{content:"";position:absolute;left:-7px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--forest)}
+.timeline .d{font-family:var(--f-mono);font-size:13.5px;color:var(--soil)}
+footer{border-top:1px solid var(--line);background:var(--paper)}
+footer .in{max-width:1240px;margin:0 auto;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:10px;font-size:14px;color:var(--muted)}
+footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:var(--ink)}
+.munsell-strip{display:flex;height:10px;border-radius:2px;overflow:hidden}
+.munsell-strip i{flex:1}
+</style>
+</head>
+<body>
+
+<div class="support"><div class="in"><span><b>สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</b></span><span>รายวิชา 2303222 ปฏิบัติการนิเวศวิทยา · ภาควิชาชีววิทยา คณะวิทยาศาสตร์</span></div></div>
+
+<header class="hero">
+  <div class="in">
+    <div>
+      <div class="eyebrow">Field Ecology Laboratory · ปีการศึกษา 2569</div>
+      <h1>คู่มือปฏิบัติการนิเวศวิทยาภาคสนาม</h1>
+      <p class="lede">แนวทางการศึกษาสังคมพืชในแปลงถาวรด้วยวิธี quadrat sampling การสำรวจระบบนิเวศตามเส้นทางศึกษาธรรมชาติ และการประเมินการกักเก็บคาร์บอนของต้นไม้ตามแนวทาง LESS พร้อมเครื่องมือคำนวณและเอกสารประกอบสำหรับดาวน์โหลด</p>
+    </div>
+    <div class="facts">
+      <dl>
+        <dt>พื้นที่</dt><dd>จุฬาลงกรณ์มหาวิทยาลัย สระบุรี ต.ชำผักแพว อ.แก่งคอย จ.สระบุรี</dd>
+        <dt>ระบบนิเวศ</dt><dd>ป่าผลัดใบรุ่นสอง ฟื้นตัวตามธรรมชาติหลังปี 2535</dd>
+        <dt>แปลงถาวร</dt><dd>30 × 50 ม. จำนวน 2 แปลง และแปลงโครงการ LESS</dd>
+        <dt>ผู้สอน</dt><dd>คณาจารย์ผู้สอนรายวิชาปฏิบัติการนิเวศวิทยา ภาควิชาชีววิทยา คณะวิทยาศาสตร์ จุฬาฯ</dd>
+      </dl>
+    </div>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="toc" aria-label="สารบัญ">
+    <p class="toc-title">สารบัญ</p>
+    <ol id="tocList">
+      <li><a href="#overview"><span class="n">01</span>ภาพรวม</a></li>
+      <li><a href="#site"><span class="n">02</span>พื้นที่ศึกษา</a></li>
+      <li><a href="#prep"><span class="n">03</span>อุปกรณ์</a></li>
+      <li><a href="#plot"><span class="n">04</span>แปลงถาวร</a></li>
+      <li><a href="#tools"><span class="n">05</span>เครื่องมือภาคสนาม</a></li>
+      <li><a href="#analysis"><span class="n">06</span>วิเคราะห์ข้อมูล</a></li>
+      <li><a href="#trail"><span class="n">07</span>เส้นทางธรรมชาติ</a></li>
+      <li><a href="#less"><span class="n">08</span>คาร์บอน LESS</a></li>
+      <li><a href="#submit"><span class="n">09</span>การส่งงาน</a></li>
+      <li><a href="#library"><span class="n">10</span>เอกสารประกอบ</a></li>
+      <li><a href="#refs"><span class="n">11</span>อ้างอิง</a></li>
+    </ol>
+  </nav>
+
+  <main>
+  <!-- 01 -->
+  <section class="sec" id="overview">
+    <div class="sec-head"><span class="sec-no">01 · OVERVIEW</span><h2>ภาพรวมของปฏิบัติการ</h2></div>
+    <div class="prose">
+      <p>การศึกษาทางนิเวศวิทยาหลายเรื่องต้องติดตามข้อมูลในพื้นที่เดิมเป็นเวลาหลายปีหรือหลายทศวรรษ เช่น การเพิ่มพูนมวลชีวภาพของป่า การหมุนเวียนธาตุอาหาร หรือการเปลี่ยนแปลงแทนที่หลังการรบกวน จึงมีการสร้าง<b>แปลงถาวร (permanent plot)</b> ไว้ศึกษาระยะยาว ภาควิชาชีววิทยามีแปลงถาวร 2 แห่ง คือ ที่สถานีถ่ายทอดความรู้สู่ชุมชน ต.ไหล่น่าน อ.เวียงสา จ.น่าน (40 × 40 ม. 4 แปลง) และที่จุฬาฯ สระบุรี ซึ่งใช้ในปฏิบัติการครั้งนี้</p>
+    </div>
+    <div class="grid3">
+      <div class="card"><span class="tag">ส่วนที่ 1</span><h3>สังคมพืชในแปลงถาวร</h3><p class="small muted">Quadrat sampling ต้นไม้และไม้หนุ่ม/ไม้พุ่ม ปัจจัยกายภาพ เศษซาก และสัตว์ในดิน แล้ววิเคราะห์ค่าดัชนีความสำคัญ ความหลากหลาย และคาร์บอนเหนือพื้นดิน</p></div>
+      <div class="card"><span class="tag">ส่วนที่ 2</span><h3>เส้นทางศึกษาธรรมชาติ</h3><p class="small muted">สำรวจแบบ belt transect 2 เส้นทาง บันทึกโครงสร้างและหน้าที่ของระบบนิเวศด้วย iNaturalist เพื่อเตรียมข้อมูลพัฒนาเป็นพื้นที่ OECMs</p></div>
+      <div class="card"><span class="tag">ส่วนที่ 3</span><h3>นำเสนอและรายงาน</h3><p class="small muted">นำเสนอหน้าชั้นเรียน ส่งวิดีโอ ภาพถ่าย และรายงานฉบับสมบูรณ์ทาง MCV</p></div>
+    </div>
+    <div class="card">
+      <h3>วัตถุประสงค์ เมื่อจบปฏิบัติการ นิสิตสามารถ</h3>
+      <ol class="steps">
+        <li><div>วิเคราะห์สังคมพืชในพื้นที่ป่าผลัดใบรุ่นสองโดยใช้วิธี quadrat sampling ได้</div></li>
+        <li><div>อธิบายความสัมพันธ์ระหว่างปัจจัยต่าง ๆ ในระบบนิเวศที่ศึกษา และประเมินสถานภาพของระบบนิเวศเบื้องต้นได้</div></li>
+        <li><div>เขียนรายงานทางวิชาการที่อภิปรายเปรียบเทียบกับการศึกษาในพื้นที่อื่น ๆ ได้</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="sec" id="site">
+    <div class="sec-head"><span class="sec-no">02 · STUDY SITE</span><h2>พื้นที่ศึกษาและตำแหน่งแปลง</h2></div>
+    <div class="grid2">
+      <div class="prose">
+        <p>โครงการพัฒนาที่ดินของจุฬาลงกรณ์มหาวิทยาลัยเริ่มในปี พ.ศ. 2532 ปัจจุบันมีพื้นที่ 3,364 ไร่ แบ่งเป็นเขตพัฒนาและเขตอนุรักษ์ แปลงถาวรตั้งอยู่ติดหมู่บ้านชำผักแพว มีสภาพเป็นป่าผลัดใบ</p>
+        <p>ก่อนปี 2535 พื้นที่ถูกแผ้วถางและเผาเพื่อปลูกข้าวโพดบนไหล่เขาและมันสำปะหลังบริเวณที่ราบเชิงเขา หลังกรมป่าไม้กำหนดแนวเขตป่าอนุรักษ์ในปี 2535 พื้นที่ถูกปล่อยให้ฟื้นตัวตามธรรมชาติ (<i>secondary succession</i>) มากว่า 20 ปี ชาวบ้านยังเก็บของป่า เช่น เห็ดและหน่อไม้</p>
+        <p>การถาง เผา และไถพรวนในอดีตเปลี่ยนคุณสมบัติดินทั้งทางกายภาพและเคมี สิ่งมีชีวิตที่ปรับตัวได้จึงเข้ามาครอบครองพื้นที่ ส่งผลต่อชนิดพันธุ์เด่นและความหนาแน่นของสังคมพืชในปัจจุบัน</p>
+      </div>
+      <figure><img src="assets/fig-site-map.jpg" alt="แผนที่โครงการพัฒนาที่ดินของจุฬาฯ แสดงอ่างเก็บน้ำ แปลงถาวรในพื้นที่ป่า อาคารหอพัก และแปลงโครงการ LESS" loading="lazy"><figcaption>ภาพที่ 1 พื้นที่โครงการพัฒนาที่ดินของจุฬาฯ และตำแหน่งแปลงถาวรโดยประมาณ (ที่มา: จุฬาลงกรณ์มหาวิทยาลัย, 2551)</figcaption></figure>
+    </div>
+
+    <div class="card">
+      <h3>แปลงย่อยของแต่ละกลุ่ม (20 × 20 ม.)</h3>
+      <p class="small muted">แตะแปลงเพื่อดูพิกัดมุมล่างซ้าย (x₀, y₀) ใช้บวกกับพิกัดต้นไม้ในแปลงของกลุ่ม เมื่อรวมข้อมูลทุกกลุ่มจะเห็นการกระจายของต้นไม้ทั้งแปลง แกน x ชี้ไปทางทิศตะวันออกโดยประมาณ ตามภาพที่ 2 ในเอกสารปฏิบัติการ</p>
+      <div class="plotmap">
+        <svg id="plotSvg" viewBox="-14 -6 146 140" role="group" aria-label="ผังแปลงย่อย A1–A7 และ B1–B9"></svg>
+        <div style="display:grid;gap:12px">
+          <div class="card" style="background:var(--bg)" aria-live="polite">
+            <div class="row"><span class="tag" id="cellTag">แปลง B4</span></div>
+            <div class="out">
+              <div class="kpi"><small>มุมล่างซ้าย (x₀, y₀)</small><b id="cellOrigin">80, 60</b></div>
+              <div class="kpi"><small>ขอบเขต x</small><b id="cellX">80–100</b></div>
+              <div class="kpi"><small>ขอบเขต y</small><b id="cellY">60–80</b></div>
+            </div>
+            <div class="fields">
+              <label for="lx">x ในแปลงย่อย (ม.)<input id="lx" type="number" value="7.5" step="0.1" min="0" max="20"></label>
+              <label for="ly">y ในแปลงย่อย (ม.)<input id="ly" type="number" value="12" step="0.1" min="0" max="20"></label>
+            </div>
+            <p class="small">พิกัดรวมของต้นไม้: <b class="mono" id="gxy">87.5, 72.0</b></p>
+          </div>
+          <figure><img src="assets/plot-ab.jpg" alt="ภาพถ่ายดาวเทียมแสดงแปลงย่อย A1–A7 และ B1–B9 รอบแปลงถาวรเดิม" loading="lazy"><figcaption>ภาพที่ 2 ตำแหน่งแปลงย่อยของแต่ละกลุ่ม จุดสีม่วงคือต้นไม้ในแปลงถาวรเดิม (ภาพระบุทิศ แต่ไม่ได้กำหนดมาตราส่วน)</figcaption></figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="sec" id="prep">
+    <div class="sec-head"><span class="sec-no">03 · EQUIPMENT</span><h2>อุปกรณ์และการเตรียมตัว</h2></div>
+    <p class="muted small">ติ๊กรายการเพื่อตรวจของก่อนขึ้นรถบัส ระบบจำสถานะไว้ในเบราว์เซอร์เครื่องนี้เท่านั้น</p>
+    <div class="row"><div class="prog" style="flex:1;min-width:160px" aria-hidden="true"><i id="progBar"></i></div><span class="small mono" id="progTxt">0 / 0</span><button class="btn ghost" type="button" id="resetCheck">ล้างรายการ</button></div>
+    <div class="grid3">
+      <div class="card"><h3>เอกสารประจำกลุ่ม</h3><p class="small muted">นิสิตเตรียมเอง</p><ul class="check" data-list="doc"></ul></div>
+      <div class="card"><h3>อุปกรณ์ส่วนกลาง (ต่อกลุ่ม)</h3><p class="small muted">นิสิตจัดลงกล่องเอง TA ตรวจอีกครั้ง</p><ul class="check" data-list="kit"></ul></div>
+      <div class="card"><h3>ของใช้ส่วนตัว</h3><p class="small muted">เตรียมไปเอง</p><ul class="check" data-list="own"></ul></div>
+    </div>
+    <div class="note">อุปกรณ์ที่ TA ดูแลและแจกหน้างาน: key จำแนกแมลง สวิงจับแมลง เครื่องชั่งดิจิทัล น้ำกลั่น ขวดแยก soil fauna กล้องส่องทางไกลและคู่มือดูนก (8 ชุด เฉพาะกลุ่มที่สนใจ) กล่องยา ลำโพงและไมค์ลอย</div>
+  </section>
+
+  <!-- 04 -->
+  <section class="sec" id="plot">
+    <div class="sec-head"><span class="sec-no">04 · PART 1 · QUADRAT SAMPLING</span><h2>การศึกษาสังคมพืชในแปลงถาวร</h2></div>
+    <div class="prose"><p>แปลงถาวรขนาดใหญ่ไม่สามารถนับได้ทั้งหมด (total count) ด้วยข้อจำกัดของกำลังคน เวลา และงบประมาณ จึงแบ่งเป็นแปลงย่อย 20 × 20 ม. แล้วสุ่มให้แต่ละกลุ่มศึกษา quadrat อาจเป็นวงกลมหรือสี่เหลี่ยมขนาดต่าง ๆ เช่น 1×1, 4×4, 10×10, 20×50 หรือ 100×100 ม. ขึ้นกับวัตถุประสงค์</p></div>
+
+    <div class="card">
+      <h3>ลำดับการทำงานในแปลง</h3>
+      <ol class="steps">
+        <li><div><h4>แบ่งกลุ่มและรับแปลง</h4><p>แบ่งเป็น 2 กลุ่มใหญ่ตามวันปฏิบัติการ (อังคาร/พฤหัสบดี) กลุ่มย่อยรับ quadrat ขนาด 20 × 20 ม. ตามภาพที่ 2 หรือตามที่กำหนดในภาคสนาม</p></div></li>
+        <li><div><h4>บันทึกปัจจัยทางกายภาพ <span class="tag">ภาคผนวก 2</span></h4>
+          <ul>
+            <li><b>อุณหภูมิ</b> อากาศ ผิวดิน และใต้ดิน (ขุดด้วยพลั่วก่อน) ทุก 30 นาทีตลอดปฏิบัติการ</li>
+            <li><b>ความชื้นดิน</b> เก็บดิน 50–100 ก. ชั่งน้ำหนักสด อบ 105 °C 24 ชม. แล้วชั่งน้ำหนักแห้ง</li>
+            <li><b>ความชื้นสัมพัทธ์</b> ด้วย hygrometer ทุก 30 นาที</li>
+            <li><b>pH ดิน</b> ด้วย pH paper และน้ำกลั่น</li>
+            <li><b>สีดิน</b> ฝึกใช้ <a href="munsell.html">Munsell Soil Color Charts ออนไลน์</a></li>
+            <li><b>สภาพกายภาพ</b> หินก้อนใหญ่ จอมปลวก ความลาดเอียง</li>
+            <li><b>ความสูงจากระดับน้ำทะเล</b> ด้วยแอป GPS Essentials หรือ AndroidTS GPS Test</li>
+          </ul></div></li>
+        <li><div><h4>ขึงเชือกกำหนด quadrat</h4><p>ใช้เชือกฟางกำหนด 20 × 20 ม. จากมุมแปลงถาวร ให้มุมล่างซ้าย (ทิศตะวันตกเฉียงใต้) เป็นจุด (0,0) แล้วขึงแบ่งเป็น quadrat ย่อย 10 × 10 ม. 4 ช่อง เชือกทำเครื่องหมายทุก 1 ม. ปลายเชือกเริ่มที่ 0</p></div></li>
+        <li><div><h4>จำแนกกลุ่มพันธุ์ไม้</h4>
+          <div class="tbl-wrap"><table><thead><tr><th>กลุ่ม</th><th>DBH</th><th>CBH เทียบเท่า</th><th>ความสูง</th><th>ติด tag</th></tr></thead><tbody>
+            <tr><td><b>Tree</b></td><td class="num">≥ 4.5 ซม.</td><td class="num">≥ 14.1 ซม.</td><td class="num">≥ 1.3 ม.</td><td>ติด</td></tr>
+            <tr><td><b>Sapling/shrub</b></td><td class="num">&lt; 4.5 ซม.</td><td class="num">&lt; 14.1 ซม.</td><td class="num">≥ 1.3 ม.</td><td>ไม่ต้องติด</td></tr>
+          </tbody></table></div>
+          <p class="small muted">ใช้ DBH 4.5 ซม. เป็นเกณฑ์ เพราะไม้ขนาดนี้มักรอดจากไฟป่าได้ (ธิติ และคณะ, 2542) และต้องการประเมินคาร์บอนในมวลชีวภาพเหนือพื้นดิน</p></div></li>
+        <li><div><h4>เก็บข้อมูล Tree ใน plot 10 × 10 ม.</h4>
+          <ul>
+            <li>ตอกป้ายหมายเลข (tag) เฉพาะ Tree</li>
+            <li>บันทึกชื่อต้นไม้ ถ้าไม่ทราบให้เก็บใบ 2–3 ใบและดอกใส่ถุง และ/หรือถ่ายภาพ เพื่อตรวจชื่อภายหลัง</li>
+            <li>บันทึกตำแหน่ง X, Y ของทุกต้นลงกระดาษกราฟ</li>
+            <li>วัด<b>เส้นรอบวงที่ระดับ 130 ซม.</b> (ซม.) ต้นที่แตกหลายลำจากตอเก่า (เรียกว่า "นาง") ให้วัดทุกนาง เรียงจากใหญ่ไปเล็ก และวัด/ประมาณความสูงทุกนาง (ม.)</li>
+          </ul></div></li>
+        <li><div><h4>เก็บข้อมูล Sapling/shrub</h4><p>ใน quadrat 10 × 10 ม. บันทึกชื่อ ตำแหน่ง CBH และความสูงเช่นเดียวกับ Tree</p></div></li>
+        <li><div><h4>ไผ่</h4><p>วัด DBH ทุกลำใน 1 กอ ถ้าเกิน 200 ลำให้สุ่มวัด 20 ลำ (เกณฑ์ LESS ใช้ 20 ลำ ดูหัวข้อ 08)</p></div></li>
+        <li><div><h4>เศษซาก (litter)</h4><p>สุ่ม quadrat 1 × 1 ม. 4 จุด หรือกำหนดเป็นระบบที่มุมของ quadrat เก็บ litter ใส่ถุง ชั่งน้ำหนักสดทันที แบ่งราว 100 ก. ไปอบหาน้ำหนักแห้ง</p></div></li>
+        <li><div><h4>การปกคลุมของเรือนยอด</h4><p>ใช้แอป Canopeo หรือ CanopyApp ถ่ายภาพเรือนยอดในแปลง</p></div></li>
+        <li><div><h4>สัตว์ในดิน (soil fauna)</h4>
+          <ul>
+            <li>สุ่ม quadrat 1 × 1 ม. 1 จุด ใช้พลั่วมือคุ้ยใบไม้และดินหา <b>macro-soil fauna</b> บันทึกชนิด จำนวน น้ำหนัก ถ่ายภาพ แล้วปล่อยคืนที่เดิม</li>
+            <li>สุ่ม quadrat 20 × 20 ซม. ตักดินลึก 5 ซม. ใส่ถุง (อย่ามัดแน่น) นำไปสกัด <b>meso-soil fauna</b> ด้วย Tullgren funnel</li>
+          </ul></div></li>
+      </ol>
+    </div>
+
+    <div class="grid2">
+      <figure><img src="assets/fig-dbh-positions.jpg" alt="ภาพลายเส้นตำแหน่งวัดเส้นรอบวงที่ระดับอกสำหรับต้นไม้รูปแบบต่าง ๆ เช่น ต้นตรง ต้นบนลาดเขา ต้นมีพูพอน ต้นแตกนาง ต้นเอน" loading="lazy"><figcaption>ภาพที่ 4 ตำแหน่งการวัดเส้นรอบวงหรือ DBH ของต้นไม้รูปแบบต่าง ๆ (ที่มา: ชิงชัย วิริยะบัญชา, 2546)</figcaption></figure>
+      <div class="card">
+        <h3>ข้อควรระวังในการวัด</h3>
+        <ul class="prose" style="padding-left:20px">
+          <li>วัดที่ 1.3 ม. จากพื้นด้านที่สูงกว่าเมื่อต้นไม้อยู่บนลาดเขา</li>
+          <li>ต้นมีพูพอนหรือรากค้ำ ให้วัดเหนือพูพอนขึ้นไปในตำแหน่งที่ลำต้นสม่ำเสมอ</li>
+          <li>ต้นแตกนางต่ำกว่า 1.3 ม. วัดทุกนางแยกกัน</li>
+          <li>ดึงสายวัดให้ตั้งฉากกับลำต้นและแนบเปลือก</li>
+          <li>ต้นไม้ที่ตายแล้วให้ระบุในตารางบันทึกด้วย</li>
+        </ul>
+        <p class="small muted">แปลงค่า: DBH = CBH ÷ π (เอกสาร LESS ใช้ π ≈ 22/7)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="sec" id="tools">
+    <div class="sec-head"><span class="sec-no">05 · FIELD TOOLS</span><h2>เครื่องมือภาคสนาม</h2></div>
+    <div class="grid2">
+      <div class="card">
+        <div class="munsell-strip" aria-hidden="true"><i style="background:#433a33"></i><i style="background:#5a4b3c"></i><i style="background:#735c41"></i><i style="background:#8d765a"></i><i style="background:#a2701b"></i><i style="background:#c49d6e"></i><i style="background:#dcc7a5"></i></div>
+        <h3>Munsell Soil Color Charts</h3>
+        <p>ระบุสีดินเป็น <span class="mono">Hue Value/Chroma</span> เช่น <span class="mono">10YR 4/3</span> บันทึกทั้งสภาพชื้นและแห้ง เทียบกลางแสงธรรมชาติ ชาร์ตออนไลน์มี 9 หน้า (10R–5Y, Gley 1–2) และเทียบสีจากรูปถ่ายได้</p>
+        <div class="row"><a class="btn" href="munsell.html">เปิดชาร์ตสีดิน</a></div>
+      </div>
+      <div class="card">
+        <h3>GPS Essentials และ Google Earth Pro</h3>
+        <p>ใช้บันทึกพิกัด ความสูง เส้นทาง และส่งออกเป็นแผนที่ สรุปจากคู่มือ อพ.สธ.-จฬ.</p>
+        <ol class="steps">
+          <li><div>สร้าง <b>Stream</b> ตามหัวข้อการสำรวจ เช่น "สำรวจนกในโรงเรียน" เพื่อรวมข้อมูลเป็นชุด</div></li>
+          <li><div>ปักหมุด <b>Waypoint</b> ที่จุดสำคัญ เช่น มุมแปลง ต้นไม้เด่น จุดศึกษาบนเส้นทาง แนบภาพจาก Camera ได้</div></li>
+          <li><div>กด Start ที่แถบ <b>Track</b> เพื่อบันทึกเส้นทางเดิน ใช้หาความยาวเส้นทางศึกษาธรรมชาติ</div></li>
+          <li><div><b>Export</b> เป็น .kmz (มีภาพ) หรือ .kml (ไม่มีภาพ) แล้วเปิดใน Google Earth Pro เพื่อวัดระยะ พื้นที่ และทำแผนที่</div></li>
+        </ol>
+      </div>
+    </div>
+    <div class="card">
+      <h3>วัดความสูงต้นไม้ด้วยไคลโนมิเตอร์</h3>
+      <div class="grid2">
+        <div class="prose small">
+          <p>1) ยืนในตำแหน่งที่เห็นยอดชัด วัดระยะราบถึงโคนต้น 2) เล็งไคลโนมิเตอร์ไปที่ยอด อ่านมุมเงย θ 3) บวกความสูงระดับสายตา</p>
+          <div class="f">ความสูง = tan(θ) × ระยะราบ + ความสูงระดับสายตา</div>
+          <p class="muted">ถ้าพื้นลาด ให้เล็งโคนต้นด้วย: ถ้ามุมกดลง (−) ให้ใช้ H = d·(tan θ<sub>ยอด</sub> − tan θ<sub>โคน</sub>) แทนการบวกระดับสายตา</p>
+        </div>
+        <div class="tool">
+          <div class="fields">
+            <label for="hAng">มุมเงยถึงยอด (องศา)<input id="hAng" type="number" value="35" step="0.5"></label>
+            <label for="hDist">ระยะราบ (ม.)<input id="hDist" type="number" value="10" step="0.1"></label>
+            <label for="hEye">ระดับสายตา (ม.)<input id="hEye" type="number" value="1.5" step="0.05"></label>
+          </div>
+          <div class="out"><div class="kpi"><small>ความสูงต้นไม้</small><b id="hOut">–</b></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="links">
+      <a href="https://play.google.com/store/apps/details?id=com.mictale.gpsessentials" target="_blank" rel="noopener"><b>GPS Essentials</b><small>Android · พิกัด ความสูง waypoint track</small></a>
+      <a href="https://www.google.com/earth/about/versions/" target="_blank" rel="noopener"><b>Google Earth Pro</b><small>เปิดไฟล์ KML/KMZ วัดระยะและพื้นที่</small></a>
+      <a href="https://www.inaturalist.org/" target="_blank" rel="noopener"><b>iNaturalist</b><small>บันทึก observation เข้าโครงการ Flora and Fauna of Chula Saraburi</small></a>
+      <a href="https://canopeoapp.com/" target="_blank" rel="noopener"><b>Canopeo</b><small>ประเมินร้อยละการปกคลุมของเรือนยอด</small></a>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="sec" id="analysis">
+    <div class="sec-head"><span class="sec-no">06 · DATA ANALYSIS</span><h2>การวิเคราะห์ข้อมูล</h2></div>
+    <div class="prose"><p>รวมข้อมูล Tree และ Sapling/shrub ของทุกกลุ่ม (ตอนเรียน A และ B) ตกลงชื่อพืชที่ยังจำแนกไม่ได้ร่วมกัน แล้ววิเคราะห์ Tree และ Sapling/shrub แยกกัน ส่วน soil fauna รวมเฉพาะกลุ่มในตอนเรียนเดียวกัน</p></div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>สังคมพืช</h3>
+        <div class="f">ความหนาแน่น (D)      = จำนวนต้น ÷ พื้นที่ที่สุ่ม (ต้น/ha)
+ความหนาแน่นสัมพัทธ์ (RD) = D ชนิดนั้น ÷ D ทุกชนิด × 100
+ความเด่น (Do)        = basal area ÷ พื้นที่ (m²/ha)
+   basal area = π·DBH²/40000  (DBH เป็น ซม.)
+ความเด่นสัมพัทธ์ (RDo) = Do ชนิดนั้น ÷ Do ทุกชนิด × 100
+ความถี่ (F)          = quadrat ที่พบ ÷ quadrat ทั้งหมด × 100
+ความถี่สัมพัทธ์ (RF)  = F ชนิดนั้น ÷ ผลรวม F × 100
+ดัชนีความสำคัญ (IVI)  = RD + RDo + RF   (เต็ม 300)
+   IV (%) = IVI ÷ 3</div>
+      </div>
+      <div class="card">
+        <h3>ความหลากหลายและความคล้ายคลึง</h3>
+        <div class="f">Shannon–Wiener  H' = −Σ pᵢ ln pᵢ
+Evenness        J  = H' ÷ ln S
+Simpson         1−D = 1 − Σ pᵢ²
+Sørensen        QS = 2C ÷ (A + B)
+   A, B = จำนวนชนิดในแต่ละพื้นที่, C = ชนิดที่พบร่วม
+Dispersion      I  = s² ÷ x̄  (จำนวนต้นต่อ quadrat)
+   I &lt; 1 สม่ำเสมอ · ≈ 1 สุ่ม · &gt; 1 เกาะกลุ่ม</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="card">
+        <h3>มวลชีวภาพเหนือพื้นดินและคาร์บอน</h3>
+        <p class="small">ป่าผลัดใบ ใช้สมการของ Ogawa et al. (1965) โดย D = DBH (ซม.) และ H = ความสูง (ม.)</p>
+        <div class="f">Ws (ลำต้น) = 0.0396 (D²H)^0.9326        kg
+Wb (กิ่ง)  = 0.003487 (D²H)^1.027       kg
+Wl (ใบ)   = 1 ÷ [28 ÷ (Ws + Wb) + 0.025] kg
+AGB       = Ws + Wb + Wl
+
+ไผ่ (Zemek, 2009): AGB = 0.5081 D^1.8595 kg
+คาร์บอน ≈ 50% ของ AGB (IPCC, 2007)</div>
+        <p class="small muted">คำนวณต่อพื้นที่ 1 เฮกแตร์ แล้วรายงานคาร์บอนเป็น ตัน/เฮกแตร์ (t/ha)</p>
+      </div>
+      <div class="card">
+        <h3>ความชื้นดิน เศษซาก และโครงสร้างขนาด</h3>
+        <div class="f">ความชื้นดิน (%) = (นน.สด − นน.แห้ง) ÷ นน.แห้ง × 100
+นน.แห้ง litter  = นน.สดทั้งหมด × (นน.แห้งตัวอย่าง ÷ นน.สดตัวอย่าง)
+litter (t/ha)   = g/m² × 0.01
+
+DBH class: &lt;10, &gt;10–15, &gt;15–20, &gt;20–25,
+           &gt;25–30, &gt;30–35, &gt;35–40, &gt;40 ซม.</div>
+        <p class="small muted">กราฟจำนวนต้นตามช่วง DBH ใช้อธิบายโครงสร้างอายุของป่า รูปตัว J กลับหัวบ่งชี้ป่าที่มีการทดแทนต่อเนื่อง</p>
+      </div>
+    </div>
+
+    <div class="card tool" id="treeCalc">
+      <h3>คำนวณรายต้น</h3>
+      <div class="fields">
+        <label for="tCbh">เส้นรอบวงที่ 1.3 ม. (ซม.)<input id="tCbh" type="number" value="99" step="0.1" min="0"></label>
+        <label for="tH">ความสูง (ม.)<input id="tH" type="number" value="5.77" step="0.01" min="0"></label>
+        <label for="tMethod">วิธีคำนวณ<select id="tMethod"><option value="lab">ปฏิบัติการ (Ogawa 1965, C = 50% AGB)</option><option value="less">LESS-FOR-01 พรรณไม้ทั่วไป</option><option value="mangrove">LESS-FOR-01 ป่าชายเลน</option></select></label>
+      </div>
+      <div class="out">
+        <div class="kpi"><small>DBH (ซม.)</small><b id="oDbh">–</b></div>
+        <div class="kpi"><small>กลุ่ม</small><b id="oCls" style="font-size:16px">–</b></div>
+        <div class="kpi"><small>AGB (kg)</small><b id="oAgb">–</b></div>
+        <div class="kpi"><small>มวลรวมราก (kg)</small><b id="oTot">–</b></div>
+        <div class="kpi"><small>คาร์บอน (kgC)</small><b id="oC">–</b></div>
+        <div class="kpi"><small>CO₂ ที่กักเก็บ (kgCO₂eq)</small><b id="oCo2">–</b></div>
+      </div>
+      <p class="small muted" id="tNote"></p>
+    </div>
+
+    <div class="card tool" id="analyzer">
+      <div class="row" style="justify-content:space-between"><h3>วิเคราะห์ข้อมูลแปลง</h3><span class="tag" id="dataBadge">ข้อมูลตัวอย่าง (สมมติ)</span></div>
+      <p class="small muted">วางข้อมูลจาก Google Sheet หรือ Excel (คั่นด้วย Tab หรือจุลภาค) คอลัมน์: <span class="mono">quadrat, tag, species, cbh_cm, h_m</span> หนึ่งแถวต่อหนึ่งนาง ต้นที่มีหลายนางใช้ tag เดียวกัน ข้อมูลที่ตั้งไว้เป็นข้อมูลสมมติเพื่อสาธิต</p>
+      <label for="dataIn" class="small muted">ข้อมูล</label>
+      <textarea id="dataIn" spellcheck="false"></textarea>
+      <div class="fields">
+        <label for="qArea">พื้นที่ต่อ quadrat (ตร.ม.)<input id="qArea" type="number" value="100" min="1"></label>
+        <label for="qN">จำนวน quadrat ที่สุ่ม (รวมที่ว่าง)<input id="qN" type="number" value="8" min="1"></label>
+        <label for="qClass">กลุ่มที่วิเคราะห์<select id="qClass"><option value="tree">Tree (DBH ≥ 4.5)</option><option value="sap">Sapling/shrub (DBH &lt; 4.5)</option><option value="all">ทั้งหมด</option></select></label>
+      </div>
+      <div class="row"><button class="btn" type="button" id="runAn">วิเคราะห์</button><button class="btn ghost" type="button" id="loadEx">โหลดข้อมูลตัวอย่าง</button><button class="btn ghost" type="button" id="copyRes">คัดลอกตารางผล</button><span class="small muted" id="anMsg" aria-live="polite"></span></div>
+      <div class="out" id="anKpi"></div>
+      <div class="tbl-wrap"><table id="anTable"></table></div>
+      <div class="grid2">
+        <div class="card" style="background:var(--bg)"><h4>จำนวนต้นตามช่วง DBH (ซม.)</h4><div class="hist" id="anHist"></div></div>
+        <div class="card" style="background:var(--bg)"><h4>Sørensen ระหว่าง quadrat</h4><div class="tbl-wrap"><table id="anSim"></table></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="sec" id="trail">
+    <div class="sec-head"><span class="sec-no">07 · PART 2 · NATURE TRAIL</span><h2>ระบบนิเวศตามเส้นทางศึกษาธรรมชาติ</h2></div>
+    <div class="grid2">
+      <div class="prose">
+        <p>พื้นที่นี้ถูกรบกวนทั้งจากธรรมชาติ (natural disturbance) และมนุษย์ (anthropogenic disturbance) พิจารณาการรบกวนจาก 4 ปัจจัย คือ <b>ความรุนแรง</b> (intensity) <b>ขนาดพื้นที่</b> (size) <b>ระยะเวลา</b> (duration) และ<b>ความถี่</b> (frequency)</p>
+        <p>หลังการรบกวน พื้นที่โล่งจะมีไม้เบิกนำ (pioneer species) เช่น หญ้า สาบเสือ พืชตระกูลถั่ว เข้ามาภายใน 2–3 เดือน ไม้พุ่มตามมาใน 6 เดือนถึง 1 ปี และไม้ใหญ่ในอีกหลายปี เรียกว่า<b>การเปลี่ยนแปลงแทนที่ทุติยภูมิ</b> (secondary succession)</p>
+        <p>การสำรวจใช้แนว <b>belt transect</b> 2 เส้นทาง เพื่อให้ความรู้แก่นักเรียนและผู้สนใจ และเตรียมข้อมูลพัฒนาเป็น<b>พื้นที่อนุรักษ์ความหลากหลายทางชีวภาพนอกเขตพื้นที่คุ้มครอง</b> (Other Effective Area-based Conservation Measures: OECMs)</p>
+      </div>
+      <figure><img src="assets/fig-trails.jpg" alt="ภาพถ่ายดาวเทียมเส้นทางศึกษาธรรมชาติเส้นที่ 1 และเส้นที่ 2 พร้อมเส้นทางที่บันทึกจากแอป" loading="lazy"><figcaption>ภาพที่ 6 เส้นทางสำหรับศึกษาระบบนิเวศ เส้นที่ 1 และเส้นที่ 2</figcaption></figure>
+    </div>
+    <div class="card">
+      <h3>สิ่งที่ต้องบันทึกตามเส้นทาง</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>หัวข้อ</th><th>สิ่งที่บันทึก</th><th>เครื่องมือ</th></tr></thead><tbody>
+        <tr><td>ที่ตั้งและความยาวเส้นทาง</td><td>พิกัดจุดเริ่ม–จุดสิ้นสุด ระยะทาง จุดที่น่าสนใจ</td><td>GPS Essentials, AndroidTS GPS Test, Geo Tracker</td></tr>
+        <tr><td>คุณสมบัติดิน</td><td>เนื้อดินด้วยมือสัมผัส ปริมาณเศษซากอินทรีย์ สีดิน</td><td>มือ, Munsell chart</td></tr>
+        <tr><td>สภาพระบบนิเวศ</td><td>ลักษณะสำคัญที่บ่งบอกระบบนิเวศ โครงสร้างชั้นเรือนยอด</td><td>สมุดบันทึก กล้องถ่ายภาพ</td></tr>
+        <tr><td>สิ่งมีชีวิต</td><td>ชนิดเด่นและชนิดที่น่าสนใจ ทั้งพืชและสัตว์</td><td>iNaturalist, คู่มือชุดเขาถ้ำเสือ-เขาจำปา</td></tr>
+        <tr><td>หน้าที่ของระบบนิเวศ</td><td>regulation, habitat, production, information ปฏิสัมพันธ์ และการรบกวน</td><td>การสังเกตและอภิปรายในกลุ่ม</td></tr>
+      </tbody></table></div>
+      <div class="note">บันทึก observation ใน iNaturalist โดยระบุลำดับทางอนุกรมวิธานที่ละเอียดที่สุดที่จำแนกได้ในขณะนั้น หรือเลือกจากที่แอปแนะนำ และเลือกโครงการ <b>"Flora and Fauna of Chula Saraburi"</b></div>
+    </div>
+    <div class="card">
+      <h3>วิดีโอของกลุ่ม</h3>
+      <p>แต่ละกลุ่มทำวิดีโอ 1 เรื่อง เกี่ยวกับสัตว์และพืชในพื้นที่ตามหัวข้อที่ได้รับมอบหมาย วิดีโอจะส่งให้ศูนย์เครือข่ายการเรียนรู้เพื่อภูมิภาค (ศคภ.) เป็นสื่อออนไลน์ จึงต้องระวังถ้อยคำและเนื้อหา ส่ง storyboard ให้อาจารย์ตรวจก่อน</p>
+      <div class="out">
+        <div class="kpi"><small>ความละเอียดขั้นต่ำ</small><b>1920×1080</b></div>
+        <div class="kpi"><small>สัดส่วน</small><b>16:9</b></div>
+        <div class="kpi"><small>เฟรมเรต</small><b>25/30/60 fps</b></div>
+        <div class="kpi"><small>ไฟล์</small><b>.MP4</b></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="sec" id="less">
+    <div class="sec-head"><span class="sec-no">08 · CARBON · LESS</span><h2>การกักเก็บคาร์บอนของต้นไม้ตามแนวทาง LESS</h2></div>
+    <div class="grid2">
+      <div class="prose">
+        <p><b>LESS</b> (Low Emission Support Scheme) หรือโครงการสนับสนุนกิจกรรมลดก๊าซเรือนกระจก ขององค์การบริหารจัดการก๊าซเรือนกระจก (องค์การมหาชน) หรือ อบก. มุ่งสร้างความตระหนักและประกาศเกียรติคุณให้บุคคล โรงเรียน ชุมชน และองค์กรขนาดเล็กที่ลดหรือกักเก็บก๊าซเรือนกระจก โดยพิจารณา CO₂, CH₄ และ N₂O</p>
+        <p>ข้อมูลต้นไม้ในพื้นที่จุฬาฯ สระบุรีบางส่วนใช้ประกอบการขึ้นทะเบียนกิจกรรม LESS จึงมีการเปลี่ยนพื้นที่เก็บข้อมูลในบางปีการศึกษา (ดูตำแหน่ง "แปลงโครงการ LESS" ในภาพที่ 1)</p>
+      </div>
+      <div class="card">
+        <h3>คุณสมบัติกิจกรรมป่าไม้ (LESS-FOR-01)</h3>
+        <ul class="prose small" style="padding-left:20px">
+          <li>มีการปลูก ดูแล หรือจัดการอย่างถูกวิธี</li>
+          <li>เป็นไม้ยืนต้น สูง ≥ 1.3 ม. และเส้นรอบวง ≥ 15 ซม.</li>
+          <li>ไม้เศรษฐกิจโตเร็วตามประกาศ อบก. ไม่เกินร้อยละ 50 และปลูกเพื่ออนุรักษ์ ไม่ตัดขาย</li>
+          <li>พืชเกษตรยืนต้น เช่น ยางพารา ปาล์มน้ำมัน ทุเรียน ต้องประเมินการปล่อยจากปุ๋ย (LESS-AGR-01) ด้วย</li>
+          <li>มีหนังสือแสดงสิทธิใช้ที่ดินหรือหนังสือยินยอมจากเจ้าของที่ดิน</li>
+          <li>ดำเนินกิจกรรมมาแล้ว ≥ 180 วัน ภาคป่าไม้ใช้ข้อมูลย้อนหลังได้มากกว่า 3 ปี</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>การวางแปลงและสุ่มตัวอย่าง</h3>
+      <div class="tbl-wrap"><table><thead><tr><th>รูปแบบการปลูก</th><th>เกณฑ์การเก็บข้อมูล</th></tr></thead><tbody>
+        <tr><td>ปลูกเป็นแปลง &lt; 100 ไร่</td><td>แปลงตัวอย่าง ≥ ร้อยละ 1 ของพื้นที่</td></tr>
+        <tr><td>ปลูกเป็นแปลง 100–999 ไร่</td><td>≥ ร้อยละ 0.5 แต่ไม่น้อยกว่า 1 ไร่</td></tr>
+        <tr><td>ปลูกเป็นแปลง ≥ 1,000 ไร่</td><td>≥ ร้อยละ 0.1 แต่ไม่น้อยกว่า 5 ไร่ หรือจำแนกชั้นภูมิตามแนวทาง T-VER</td></tr>
+        <tr><td>ปลูกเป็นแถวเป็นแนว (strip)</td><td>&gt; 300 ต้น เก็บตัวแทน ≥ 300 ต้นและนับทุกต้น · &lt; 300 ต้น เก็บทุกต้น</td></tr>
+        <tr><td>ปลูกไม่เป็นระเบียบ จัดสวน รอบอาคาร</td><td>เก็บข้อมูลทุกต้น</td></tr>
+        <tr><td>ไผ่</td><td>วัดเฉพาะความโต กอ ≤ 20 ลำวัดทุกลำ · กอ &gt; 20 ลำวัด 20 ลำและนับจำนวนลำทั้งหมด</td></tr>
+      </tbody></table></div>
+    </div>
+
+    <div class="card">
+      <h3>สมการใน LESS-FOR-01 (เวอร์ชัน 6)</h3>
+      <div class="f">CO₂ (kgCO₂eq) = (AGB + BGB) × สัดส่วนคาร์บอน × 44/12
+BGB (ราก)    = AGB × สัดส่วนรากต่อต้น
+D = GBH ÷ (22/7)</div>
+      <div class="tbl-wrap"><table><thead><tr><th>กลุ่มพรรณไม้</th><th>สมการ AGB (kg)</th><th class="num">ราก : ต้น</th><th class="num">คาร์บอน</th><th>ที่มา</th></tr></thead><tbody>
+        <tr><td>พรรณไม้ทั่วไป</td><td class="mono small">Ws=0.0396(D²H)^0.933<br>Wb=0.00349(D²H)^1.03<br>Wl=[28/(Ws+Wb)+0.025]⁻¹</td><td class="num">0.27</td><td class="num">47%</td><td class="small">IPCC 2006</td></tr>
+        <tr><td>ป่าชายเลน</td><td class="mono small">Ws=0.05466(D²H)^0.945<br>Wb=0.01579(D²H)^0.9124<br>Wl=0.0678(D²H)^0.5806</td><td class="num">0.48</td><td class="num">47.15%</td><td class="small">คณะวนศาสตร์ มก. 2554</td></tr>
+        <tr><td>กลุ่มปาล์ม</td><td class="mono small">6.666 + 12.826·H^0.5·ln H</td><td class="num">0.41</td><td class="num">41.3%</td><td class="small">คณะวนศาสตร์ มก. 2554</td></tr>
+        <tr><td>เถาวัลย์</td><td class="mono small">0.8622·D^2.021</td><td class="num">0.27</td><td class="num">47%</td><td class="small">IPCC 2006</td></tr>
+        <tr><td>ไผ่บงป่า</td><td class="mono small">0.1466·D^0.7187</td><td class="num">0.27</td><td class="num">47%</td><td class="small">IPCC 2006</td></tr>
+        <tr><td>ไผ่บงดำ</td><td class="mono small">0.49522·(D²)^0.8726</td><td class="num">0.27</td><td class="num">47%</td><td class="small">IPCC 2006</td></tr>
+        <tr><td>ไผ่ข้าวหลาม</td><td class="mono small">0.17446·(D²)^1.0437</td><td class="num">0.27</td><td class="num">47%</td><td class="small">IPCC 2006</td></tr>
+        <tr><td>ไผ่ไร่และไผ่ผาก</td><td class="mono small">0.2425·(D²)^1.0751</td><td class="num">0.27</td><td class="num">47%</td><td class="small">IPCC 2006</td></tr>
+      </tbody></table></div>
+      <p class="small muted">ไผ่ต่อกอ = ผลรวม CO₂ ของลำที่วัด × (จำนวนลำทั้งหมด ÷ จำนวนลำที่วัด) · ตรวจตัวอย่างในไฟล์คำนวณ: GBH 99 ซม. สูง 5.77 ม. ได้ 345.11 kgCO₂eq ซึ่งเครื่องคำนวณรายต้นในหัวข้อ 06 ให้ผลตรงกัน</p>
+    </div>
+
+    <div class="card">
+      <h3>ขั้นตอนยื่นขอรับรอง</h3>
+      <div class="timeline">
+        <div class="t"><span class="d">1 · ดำเนินกิจกรรม</span><span>ดำเนินกิจกรรมลดหรือกักเก็บก๊าซ ตรวจเกณฑ์ระยะเวลา ≥ 180 วัน</span></div>
+        <div class="t"><span class="d">2 · กรอกไฟล์คำนวณ</span><span>ดาวน์โหลดไฟล์ Excel ที่เมนู "วิธีการคำนวณ" เลือกโครงการด้านป่าไม้และการเกษตร กรอกข้อมูลต้นไม้รายต้น (ชื่อ กลุ่มพรรณไม้ ความสูง เส้นรอบวง) และไผ่รายลำ ระบบคำนวณ kgCO₂eq ให้อัตโนมัติ</span></div>
+        <div class="t"><span class="d">3 · เตรียมเอกสาร</span><span>ใบสมัคร ไฟล์คำนวณ หนังสือรับรองนิติบุคคล/หลักฐานคณะบุคคล และหลักฐานการดำเนินกิจกรรม เช่น ภาพถ่าย รายงาน</span></div>
+        <div class="t"><span class="d">4 · ส่งออนไลน์</span><span>ส่งไฟล์อิเล็กทรอนิกส์ผ่านเว็บไซต์โครงการ LESS ของ อบก.</span></div>
+        <div class="t"><span class="d">5 · พิจารณา</span><span>อบก. ตรวจเอกสาร หากต้องแก้ไขส่งกลับภายใน 7 วัน อุทธรณ์ได้ภายใน 30 วันทำการ ผ่านแล้วได้รับใบประกาศเกียรติคุณ</span></div>
+      </div>
+      <div class="row"><a class="btn" href="docs/less-for-01-calculation-example.xlsx" download>ไฟล์คำนวณ LESS-FOR-01 พร้อมตัวอย่าง (.xlsx)</a><a class="btn ghost" href="http://ghgreduction.tgo.or.th/less" target="_blank" rel="noopener">เว็บไซต์โครงการ LESS</a></div>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="sec" id="submit">
+    <div class="sec-head"><span class="sec-no">09 · DELIVERABLES</span><h2>การส่งงานและคำถามท้ายปฏิบัติการ</h2></div>
+    <div class="note warn">กำหนดการอาจเปลี่ยนแปลง โปรดติดตามประกาศจากผู้สอนใน MCV เป็นระยะ</div>
+    <div class="grid2">
+      <div class="card">
+        <h3>กำหนดส่ง</h3>
+        <div class="timeline">
+          <div class="t"><span class="d">28 ต.ค. 2569 (sec 1) · 30 ต.ค. 2569 (sec 2)</span><span>ส่ง storyboard และเนื้อหาวิดีโอให้อาจารย์ตรวจ</span></div>
+          <div class="t"><span class="d">10 พ.ย. 2569 (sec 1) · 12 พ.ย. 2569 (sec 2)</span><span>นำเสนอหน้าชั้นเรียน ส่งสไลด์ทาง MCV: แปลงถาวร 10 นาที เส้นทางธรรมชาติ 5 นาที ตอบคำถาม 10 นาที/กลุ่ม</span></div>
+          <div class="t"><span class="d">30 พ.ย. 2569</span><span>ส่งวิดีโอและภาพถ่ายภาคสนาม (อย่างน้อย 30 ภาพ แยก folder ตามกลุ่ม) ทาง Google Drive</span></div>
+          <div class="t"><span class="d">4 ธ.ค. 2569</span><span>ส่งรายงาน 1 เล่ม (pdf) ทาง MCV</span></div>
+          <div class="t"><span class="d">6 ธ.ค. 2569</span><span>ส่งรายงานฉบับสมบูรณ์หลังแก้ไขตามข้อเสนอแนะ</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>โครงรายงาน</h3>
+        <h4>1. แปลงถาวร</h4>
+        <ul class="small" style="margin:0;padding-left:20px">
+          <li>ความสัมพันธ์ระหว่างปัจจัยกายภาพกับลักษณะสังคมพืช</li>
+          <li>เปรียบเทียบกับการศึกษาอื่น เช่น Dumrongrojwatthana et al. (2009), จิรนันท์ และนันทนา (2547), นาฏสุดา (2550) และอธิบายสาเหตุความต่าง</li>
+          <li>ประเมินสถานภาพความสมบูรณ์ของระบบนิเวศ</li>
+          <li>ข้อจำกัดและข้อเสนอแนะในการปรับปรุงการศึกษา</li>
+        </ul>
+        <h4>2. เส้นทางศึกษาธรรมชาติ</h4>
+        <ul class="small" style="margin:0;padding-left:20px">
+          <li>สภาพโดยรวม ระยะทาง จุดที่น่าสนใจ พร้อมเอกสารอ้างอิง</li>
+          <li>บัญชีรายชื่อจาก iNaturalist พร้อมภาพ และเปรียบเทียบการจำแนกของนิสิตกับที่ผู้ใช้อื่นแนะนำ</li>
+          <li>alpha diversity ของกลุ่มเทียบกับโครงการ Flora and Fauna of Chula Saraburi</li>
+          <li>บทบาทและปฏิสัมพันธ์เชิงนิเวศของสิ่งมีชีวิตที่บันทึก (ไม่เกิน ¼ หน้า A4)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card">
+      <h3>คำถามหลังการศึกษาภาคสนาม</h3>
+      <ol class="steps">
+        <li><div>นิสิตสุ่มตัวอย่างประมาณร้อยละ 40 ของแปลงทั้งหมด หากศึกษาครบทั้ง 30 แปลง คาดว่าผล เช่น จำนวนชนิด ความหนาแน่น มวลชีวภาพ และคาร์บอน จะเป็นอย่างไร</div></li>
+        <li><div>ถ้าชาวบ้านต้องการตัดต้นไม้บางส่วนไปทำฟืน และกลุ่มของนิสิตเป็นผู้บริหารพื้นที่ จะอนุญาตหรือไม่ ถ้าอนุญาตจะให้ตัดชนิดใด เพราะเหตุใด</div></li>
+        <li><div>ถ้าจำเป็นต้องตัดต้นไม้ออก นิสิตเสนอให้ตัดชนิดใด ตำแหน่งไหน เพื่ออนุรักษ์ความหลากหลาย โครงสร้างป่า และการทดแทนตามธรรมชาติ</div></li>
+        <li><div>นิสิตเรียนรู้อะไรจากการปฏิบัติด้วยตนเอง (self-learning) และจากการทำงานกลุ่ม (collective-learning) ตอบเป็นรายคน ไม่เกิน 1 หน้า A4 อักษร 16 pt</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="sec" id="library">
+    <div class="sec-head"><span class="sec-no">10 · LIBRARY</span><h2>เอกสารประกอบ</h2></div>
+    <p class="muted small">ไฟล์ PDF ถูกบีบอัดเพื่อให้โหลดบนมือถือได้ หนังสือชุดเขาถ้ำเสือ-เขาจำปาครอบคลุมพื้นที่เดียวกับปฏิบัติการ ใช้เป็นคู่มือจำแนกชนิดในภาคสนามได้</p>
+    <h3>คู่มือปฏิบัติการและวิธีการ</h3>
+    <div class="lib" id="libMain"></div>
+    <h3>หนังสือชุดความหลากหลายทางชีวภาพ บริเวณเขาถ้ำเสือ-เขาจำปา</h3>
+    <div class="lib" id="libBooks"></div>
+    <h3>แหล่งข้อมูลภายนอก</h3>
+    <div class="links">
+      <a href="http://ghgreduction.tgo.or.th/less" target="_blank" rel="noopener"><b>โครงการ LESS · อบก.</b><small>ไฟล์คำนวณ แบบฟอร์มใบสมัคร และประกาศผล</small></a>
+      <a href="https://www.ipcc-nggip.iges.or.jp/public/2006gl/vol4.html" target="_blank" rel="noopener"><b>IPCC 2006 Guidelines Vol. 4 AFOLU</b><small>ค่าสัดส่วนคาร์บอนและรากต่อต้น</small></a>
+      <a href="https://www.cbd.int/doc/decisions/cop-14/cop-14-dec-08-en.pdf" target="_blank" rel="noopener"><b>CBD Decision 14/8 · OECMs</b><small>นิยามและเกณฑ์พื้นที่ OECMs</small></a>
+      <a href="http://www.dnp.go.th/development/Biomass.pdf" target="_blank" rel="noopener"><b>คู่มือการประมาณมวลชีวภาพของหมู่ไม้</b><small>ชิงชัย วิริยะบัญชา (2546) กรมอุทยานฯ</small></a>
+      <a href="https://www.inaturalist.org/" target="_blank" rel="noopener"><b>iNaturalist</b><small>ค้นหาโครงการ Flora and Fauna of Chula Saraburi</small></a>
+      <a href="munsell.html"><b>Munsell Soil Color Charts ออนไลน์</b><small>ชาร์ต 9 หน้า และเทียบสีจากรูปถ่าย</small></a>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="sec" id="refs">
+    <div class="sec-head"><span class="sec-no">11 · REFERENCES</span><h2>เอกสารอ้างอิง</h2></div>
+    <ul class="prose small" style="padding-left:20px;max-width:90ch">
+      <li>จิรนันท์ ธีระกุลพิศุทธิ์ และ นันทนา คชเสนี. 2547. ศักยภาพการสะสมธาตุคาร์บอนในมวลชีวภาพเหนือพื้นดินของระบบนิเวศป่าทองผาภูมิ. การประชุมการเปลี่ยนแปลงสภาพภูมิอากาศทางด้านป่าไม้. กรมอุทยานแห่งชาติ สัตว์ป่าและพันธุ์พืช.</li>
+      <li>จุฬาลงกรณ์มหาวิทยาลัย. 2551. โครงการพัฒนาที่ดินจุฬาลงกรณ์มหาวิทยาลัย อำเภอแก่งคอย จังหวัดสระบุรี.</li>
+      <li>ชิงชัย วิริยะบัญชา. 2546. คู่มือการประมาณมวลชีวภาพของหมู่ไม้. กรมอุทยานแห่งชาติ สัตว์ป่าและพันธุ์พืช.</li>
+      <li>ธิติ วิสารัตน์, ศิริภา โพธิ์พินิจ และ บุญชุบ บุญทวี. 2542. แนวทางการบรรยายและวิเคราะห์สังคมพืช. สำนักวิชาการป่าไม้ กรมป่าไม้.</li>
+      <li>นาฏสุดา ภูมิจำนงค์. 2550. ปริมาณมวลชีวภาพเหนือพื้นดินในรากและคาร์บอนในดินของสวนป่าไม้สัก. วารสารสิ่งแวดล้อมและทรัพยากรธรรมชาติ 5(2): 109–121.</li>
+      <li>พงษ์ชัย ดำรงโรจน์วัฒนา และ นิพาดา เรือนแก้ว ดิษยทัต. 2566. การวางแปลงถาวรเพื่อศึกษาระบบนิเวศป่าไม้. อพ.สธ.-จฬ.</li>
+      <li>พงษ์ชัย ดำรงโรจน์วัฒนา. 2566. การใช้งาน GPS Essentials และ Google Earth Pro ในการทำข้อมูลทรัพยากรธรรมชาติ. อพ.สธ.-จฬ.</li>
+      <li>องค์การบริหารจัดการก๊าซเรือนกระจก (องค์การมหาชน). LESS-FOR-01 การกักเก็บคาร์บอนของต้นไม้ เวอร์ชัน 6.</li>
+      <li>Dumrongrojwatthana, P., Gajaseni, N. and Popan, A. 2009. Impact of disturbance on floristic and soil properties in deciduous forest, Nam Wa sub-watershed, Northern Thailand. Journal of Scientific Research, Chulalongkorn University 34(2): 49–57.</li>
+      <li>IPCC. 2006. 2006 IPCC Guidelines for National Greenhouse Gas Inventories, Volume 4: Agriculture, Forestry and Other Land Use.</li>
+      <li>IPCC. 2007. Climate Change 2007: The Physical Science Basis. Cambridge University Press.</li>
+      <li>Krebs, C. J. 1999. Ecological Methodology. 2nd ed. Benjamin/Cummings.</li>
+      <li>Ogawa, H., Yoda, K., Ogino, K. and Kira, T. 1965. Comparative ecological studies on three main types of forest vegetation in Thailand II. Plant biomass. Nature and Life in Southeast Asia 4: 49–80.</li>
+      <li>Sutherland, W. J. 2009. Ecological Census Techniques: A Handbook. 2nd ed. Cambridge University Press.</li>
+      <li>Zemek, O. J. 2009. Biomass and carbon stocks inventory of perennial vegetation in the Chieng Khoi watershed, NW Viet Nam. M.Sc. Thesis, University of Hohenheim.</li>
+    </ul>
+  </section>
+  </main>
+</div>
+
+<footer>
+  <div class="in">
+    <p class="sup">สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</p>
+    <p>เนื้อหาเรียบเรียงจากเอกสารประกอบการศึกษาภาคสนาม วิชาปฏิบัติการนิเวศวิทยา (2569) โดยคณาจารย์ผู้สอน ภาควิชาชีววิทยา คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ร่วมกับคู่มือของโครงการอนุรักษ์พันธุกรรมพืชอันเนื่องมาจากพระราชดำริฯ สนองพระราชดำริโดยจุฬาลงกรณ์มหาวิทยาลัย (อพ.สธ.-จฬ.) และเอกสารโครงการ LESS ของ อบก.</p>
+    <p>หนังสือและคู่มือในคลังเอกสารเป็นลิขสิทธิ์ของเจ้าของผลงาน เผยแพร่เพื่อการศึกษา</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const fmt=(x,d=2)=>Number.isFinite(x)?x.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}):'–';
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* ---------- plot map ---------- */
+const cells={A1:[0,40],A2:[20,40],A3:[0,60],A4:[20,60],A5:[40,0],A6:[60,0],A7:[40,20],B1:[60,20],B2:[80,40],B3:[100,40],B4:[80,60],B5:[100,60],B6:[40,80],B7:[60,80],B8:[40,100],B9:[60,100]};
+const svg=$('plotSvg'),NS='http://www.w3.org/2000/svg',Y=y=>120-y;
+function el(n,a,p){const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);(p||svg).appendChild(e);return e}
+for(let v=0;v<=120;v+=20){el('line',{x1:v,y1:0,x2:v,y2:120,stroke:'var(--grid)','stroke-width':.3});el('line',{x1:0,y1:Y(v),x2:120,y2:Y(v),stroke:'var(--grid)','stroke-width':.3});
+  const t=el('text',{x:v,y:126,'text-anchor':'middle','font-size':4});t.textContent=v;const t2=el('text',{x:-2,y:Y(v)+1.4,'text-anchor':'end','font-size':4});t2.textContent=v}
+const core=el('rect',{x:40,y:Y(80),width:40,height:40,fill:'none',stroke:'var(--soil)','stroke-dasharray':'2 1.5','stroke-width':.6});
+const ct=el('text',{x:60,y:Y(60)+1.5,'text-anchor':'middle','font-size':3.6});ct.textContent='แปลงถาวรเดิม';
+const ax=el('text',{x:121,y:Y(0)-2,'font-size':4,'text-anchor':'end'});ax.textContent='x (ม.)';
+const ay=el('text',{x:2,y:Y(120)-1.5,'font-size':4});ay.textContent='y (ม.)';
+let sel='B4';
+Object.entries(cells).forEach(([k,[x,y]])=>{
+  const g=el('g',{class:'cell',tabindex:0,role:'button','aria-label':'แปลง '+k});
+  el('rect',{x:x+.6,y:Y(y+20)+.6,width:18.8,height:18.8,rx:.8},g);
+  const t=el('text',{x:x+10,y:Y(y+10)+2,'text-anchor':'middle'},g);t.textContent=k;
+  g.dataset.k=k;g.addEventListener('click',()=>pick(k));g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick(k)}});
+});
+function pick(k){sel=k;svg.querySelectorAll('.cell').forEach(c=>c.classList.toggle('on',c.dataset.k===k));const[x,y]=cells[k];
+  $('cellTag').textContent='แปลง '+k;$('cellOrigin').textContent=x+', '+y;$('cellX').textContent=x+'–'+(x+20);$('cellY').textContent=y+'–'+(y+20);upd()}
+function upd(){const[x,y]=cells[sel];const lx=parseFloat($('lx').value)||0,ly=parseFloat($('ly').value)||0;$('gxy').textContent=(x+lx).toFixed(1)+', '+(y+ly).toFixed(1)}
+$('lx').addEventListener('input',upd);$('ly').addEventListener('input',upd);pick('B4');
+
+/* ---------- checklist ---------- */
+const lists={
+ doc:[['เอกสารกำหนดการ',''],['เอกสารประกอบการทำปฏิบัติการภาคสนาม',''],['ตารางบันทึกข้อมูล (quadrat และเส้นทาง)','ภาคผนวก 2'],['กล้องถ่ายภาพ / โทรศัพท์ (ติดตั้ง GPS Essentials, iNaturalist, Canopeo)','']],
+ kit:[['กระดาษกราฟ','2 แผ่น'],['กระดาษ A4','2 แผ่น'],['เชือกฟาง 22 ม. ทำเครื่องหมายทุก 1 ม.','2 เส้น'],['เชือกฟาง 5 ม. (quadrat 1×1 ม.)','2 เส้น'],['เชือกฟาง 2–3 ม. (ผูกยึด)','2 เส้น'],['ไม้เสียบลูกชิ้นทำ quadrat','4 อัน'],['สายวัด DBH','2 อัน'],['Hygrometer','1'],['Thermometer','1'],['pH paper + หลอด test tube','1 ชุด'],['ถุงใสเก็บตัวอย่างสัตว์ เล็ก/กลาง','5 ใบ/ขนาด'],['ถุงเก็บตัวอย่างพืช กลาง/ใหญ่','10 + 5 ใบ'],['ยางวง','10 เส้น'],['พลั่วมือขุดดิน','2 อัน'],['ปากคีบ','1'],['ปากกา marker','1 ชุด'],['รูปวิธานจำแนกพันธุ์ไม้','1 เล่ม'],['กระดาษฟอยล์อบดิน','1']],
+ own:[['ผ้าเช็ดตัว',''],['ขวดน้ำ',''],['เสื้อแขนยาว',''],['รองเท้าผ้าใบ ถุงเท้า',''],['เสื้อกันฝน / ร่ม',''],['หมวก',''],['ยาประจำตัว',''],['ครีม/สเปรย์กันยุง',''],['ครีมกันแดด',''],['ขนม','']]};
+let saved={};try{saved=JSON.parse(store.get('eco-check')||'{}')||{}}catch(e){saved={}}
+document.querySelectorAll('ul.check').forEach(ul=>{const key=ul.dataset.list;lists[key].forEach(([t,q],i)=>{const id='ck-'+key+'-'+i;const li=document.createElement('li');
+  li.innerHTML=`<label for="${id}"><input type="checkbox" id="${id}"><span>${t}</span>${q?`<span class="q">${q}</span>`:''}</label>`;const cb=li.querySelector('input');cb.checked=!!saved[id];
+  cb.addEventListener('change',()=>{saved[id]=cb.checked;store.set('eco-check',JSON.stringify(saved));prog()});ul.appendChild(li)})});
+function prog(){const all=document.querySelectorAll('ul.check input'),d=[...all].filter(c=>c.checked).length;$('progBar').style.width=(d/all.length*100)+'%';$('progTxt').textContent=d+' / '+all.length}
+$('resetCheck').addEventListener('click',()=>{saved={};store.set('eco-check','{}');document.querySelectorAll('ul.check input').forEach(c=>c.checked=false);prog()});prog();
+
+/* ---------- height ---------- */
+function hcalc(){const a=parseFloat($('hAng').value),d=parseFloat($('hDist').value),e=parseFloat($('hEye').value)||0;const h=Math.tan(a*Math.PI/180)*d+e;$('hOut').textContent=Number.isFinite(h)?h.toFixed(2)+' ม.':'–'}
+['hAng','hDist','hEye'].forEach(i=>$(i).addEventListener('input',hcalc));hcalc();
+
+/* ---------- tree biomass ---------- */
+function ogawa(D,H){const x=D*D*H;const ws=0.0396*Math.pow(x,0.9326),wb=0.003487*Math.pow(x,1.027),wl=1/(28/(ws+wb)+0.025);return ws+wb+wl}
+function lessGeneral(D,H){const x=D*D*H;const ws=0.0396*Math.pow(x,0.933),wb=0.00349*Math.pow(x,1.03),wl=1/(28/(ws+wb)+0.025);return ws+wb+wl}
+function lessMangrove(D,H){const x=D*D*H;return 0.05466*Math.pow(x,0.945)+0.01579*Math.pow(x,0.9124)+0.0678*Math.pow(x,0.5806)}
+function tcalc(){const cbh=parseFloat($('tCbh').value),H=parseFloat($('tH').value),m=$('tMethod').value;
+  if(!(cbh>0&&H>0)){['oDbh','oCls','oAgb','oTot','oC','oCo2'].forEach(i=>$(i).textContent='–');return}
+  let D,agb,tot,C,note;
+  if(m==='lab'){D=cbh/Math.PI;agb=ogawa(D,H);tot=NaN;C=agb*0.5;note='ตามเอกสารปฏิบัติการ: คาร์บอน = 50% ของมวลชีวภาพเหนือพื้นดิน (ไม่รวมราก) · DBH = CBH ÷ π'}
+  else if(m==='less'){D=cbh/(22/7);agb=lessGeneral(D,H);tot=agb*1.27;C=tot*0.47;note='LESS-FOR-01 พรรณไม้ทั่วไป: ราก 27% ของ AGB, คาร์บอน 47% · DBH = GBH ÷ (22/7)'}
+  else{D=cbh/(22/7);agb=lessMangrove(D,H);tot=agb*1.48;C=tot*0.4715;note='LESS-FOR-01 ป่าชายเลน: ราก 48% ของ AGB, คาร์บอน 47.15%'}
+  $('oDbh').textContent=fmt(D,1);$('oCls').textContent=D>=4.5?'Tree':'Sapling/shrub';$('oAgb').textContent=fmt(agb);$('oTot').textContent=Number.isFinite(tot)?fmt(tot):'ไม่คิด';
+  $('oC').textContent=fmt(C);$('oCo2').textContent=fmt(C*44/12);$('tNote').textContent=note+(m==='less'&&cbh<15?' · หมายเหตุ: LESS รับเฉพาะเส้นรอบวง ≥ 15 ซม.':'')}
+['tCbh','tH','tMethod'].forEach(i=>$(i).addEventListener('input',tcalc));tcalc();
+
+/* ---------- analyzer ---------- */
+const EX=`quadrat\ttag\tspecies\tcbh_cm\th_m
+Q1\t101\tแดง\t62\t11
+Q1\t102\tประดู่\t48\t9
+Q1\t103\tติ้วขน\t21\t5.5
+Q1\t104\tแดง\t35\t8
+Q1\t104\tแดง\t22\t6.5
+Q1\t105\tขี้อ้าย\t40\t8.5
+Q1\t-\tติ้วขน\t9\t2.2
+Q1\t-\tสาบเสือ\t4\t1.5
+Q2\t106\tแดง\t80\t13
+Q2\t107\tโมกมัน\t26\t6
+Q2\t108\tติ้วขน\t18\t5
+Q2\t109\tติ้วขน\t16\t4.8
+Q2\t110\tแสมสาร\t30\t7
+Q2\t-\tโมกมัน\t11\t2.6
+Q3\t111\tประดู่\t95\t14
+Q3\t112\tแดง\t44\t9.5
+Q3\t113\tตะคร้อ\t52\t8
+Q3\t114\tขี้อ้าย\t31\t7.5
+Q3\t114\tขี้อ้าย\t19\t6
+Q3\t-\tแดง\t12\t2.4
+Q4\t115\tติ้วขน\t24\t6
+Q4\t116\tติ้วขน\t20\t5.2
+Q4\t117\tติ้วขน\t15\t4.5
+Q4\t118\tแดง\t58\t10
+Q4\t119\tกระพี้จั่น\t28\t6.5
+Q4\t-\tสาบเสือ\t5\t1.6
+Q5\t120\tแดง\t110\t15
+Q5\t121\tมะกอก\t47\t9
+Q5\t122\tโมกมัน\t23\t5.5
+Q5\t123\tประดู่\t36\t8
+Q6\t124\tแสมสาร\t42\t8
+Q6\t125\tแสมสาร\t33\t7
+Q6\t126\tติ้วขน\t17\t4.5
+Q6\t127\tขี้อ้าย\t55\t10
+Q6\t-\tติ้วขน\t8\t2
+Q7\t128\tแดง\t70\t12
+Q7\t129\tตะคร้อ\t64\t9.5
+Q7\t130\tโมกมัน\t19\t4.6
+Q8\t131\tติ้วขน\t22\t5.4
+Q8\t132\tกระพี้จั่น\t38\t7.6
+Q8\t133\tแดง\t27\t6.8`;
+let isExample=true;
+function parse(txt){const lines=txt.trim().split(/\r?\n/).filter(l=>l.trim());if(!lines.length)return[];
+  const sep=lines[0].includes('\t')?'\t':',';const rows=lines.map(l=>l.split(sep).map(s=>s.trim()));
+  const hdr=isNaN(parseFloat(rows[0][3]));return (hdr?rows.slice(1):rows).map((r,i)=>({q:r[0],tag:r[1]&&r[1]!=='-'?r[1]:'_r'+i,sp:r[2],cbh:parseFloat(r[3]),h:parseFloat(r[4]),line:i+(hdr?2:1)}))}
+function analyze(){
+  const raw=parse($('dataIn').value);const bad=raw.filter(r=>!r.q||!r.sp||!(r.cbh>0)||!(r.h>0));
+  const rows=raw.filter(r=>!bad.includes(r));
+  // group stems into individuals
+  const ind=new Map();rows.forEach(r=>{const k=r.q+'|'+r.tag;if(!ind.has(k))ind.set(k,{q:r.q,sp:r.sp,stems:[]});ind.get(k).stems.push(r)});
+  const cls=$('qClass').value;
+  let trees=[...ind.values()].map(t=>{const dbhs=t.stems.map(s=>s.cbh/Math.PI);const maxD=Math.max(...dbhs);
+    const ba=dbhs.reduce((a,d)=>a+Math.PI*d*d/40000,0);const agb=t.stems.reduce((a,s)=>a+ogawa(s.cbh/Math.PI,s.h),0);return{...t,maxD,ba,agb,dbhs}});
+  trees=trees.filter(t=>cls==='all'||(cls==='tree'?t.maxD>=4.5:t.maxD<4.5));
+  const area=(parseFloat($('qArea').value)||100);const quads=[...new Set(rows.map(r=>r.q))];
+  let nQ=Math.max(parseInt($('qN').value)||0,quads.length);const ha=area*nQ/10000;
+  if(!trees.length){$('anMsg').textContent='ไม่พบข้อมูลที่ใช้ได้ ตรวจสอบคอลัมน์และกลุ่มที่เลือก';return}
+  const sp={};trees.forEach(t=>{const s=sp[t.sp]||(sp[t.sp]={n:0,ba:0,agb:0,qs:new Set(),byQ:{}});s.n++;s.ba+=t.ba;s.agb+=t.agb;s.qs.add(t.q);s.byQ[t.q]=(s.byQ[t.q]||0)+1});
+  const N=trees.length,BA=trees.reduce((a,t)=>a+t.ba,0),sumF=Object.values(sp).reduce((a,s)=>a+s.qs.size/nQ*100,0);
+  const out=Object.entries(sp).map(([name,s])=>{const D=s.n/ha,RD=s.n/N*100,Do=s.ba/ha,RDo=s.ba/BA*100,F=s.qs.size/nQ*100,RF=F/sumF*100;
+    const counts=[];for(let i=0;i<nQ;i++)counts.push(i<quads.length?(s.byQ[quads[i]]||0):0);const m=counts.reduce((a,b)=>a+b,0)/nQ;const v=counts.reduce((a,b)=>a+(b-m)**2,0)/(nQ-1||1);
+    return{name,n:s.n,D,RD,Do,RDo,F,RF,IVI:RD+RDo+RF,vm:m?v/m:NaN}}).sort((a,b)=>b.IVI-a.IVI);
+  const H=-out.reduce((a,s)=>{const p=s.n/N;return a+p*Math.log(p)},0),S=out.length,J=S>1?H/Math.log(S):NaN,simp=1-out.reduce((a,s)=>a+(s.n/N)**2,0);
+  const agbHa=trees.reduce((a,t)=>a+t.agb,0)/1000/ha;
+  $('anKpi').innerHTML=[['จำนวนต้น',N,0],['จำนวนชนิด (S)',S,0],['ความหนาแน่น (ต้น/ha)',N/ha,0],['พื้นที่หน้าตัด (m²/ha)',BA/ha,2],["Shannon H'",H,3],['Evenness J',J,3],['Simpson 1−D',simp,3],['AGB (t/ha)',agbHa,2],['คาร์บอน (tC/ha)',agbHa*0.5,2]]
+    .map(([l,v,d])=>`<div class="kpi"><small>${l}</small><b>${fmt(v,d)}</b></div>`).join('');
+  const disp=x=>!Number.isFinite(x)?'–':x<0.8?'สม่ำเสมอ':x>1.2?'เกาะกลุ่ม':'สุ่ม';
+  $('anTable').innerHTML='<thead><tr><th>ชนิด</th><th class="num">ต้น</th><th class="num">D (ต้น/ha)</th><th class="num">RD %</th><th class="num">Do (m²/ha)</th><th class="num">RDo %</th><th class="num">F %</th><th class="num">RF %</th><th class="num">IVI</th><th class="num">IV %</th><th class="num">s²/x̄</th><th>การกระจาย</th></tr></thead><tbody>'+
+    out.map(s=>`<tr><td>${esc(s.name)}</td><td class="num">${s.n}</td><td class="num">${fmt(s.D,1)}</td><td class="num">${fmt(s.RD)}</td><td class="num">${fmt(s.Do,3)}</td><td class="num">${fmt(s.RDo)}</td><td class="num">${fmt(s.F,1)}</td><td class="num">${fmt(s.RF)}</td><td class="num">${fmt(s.IVI)}</td><td class="num">${fmt(s.IVI/3)}</td><td class="num">${fmt(s.vm)}</td><td>${disp(s.vm)}</td></tr>`).join('')+'</tbody>';
+  // DBH classes (per stem as in lab doc: each individual largest stem)
+  const bins=[['<10',0,10],['10–15',10,15],['15–20',15,20],['20–25',20,25],['25–30',25,30],['30–35',30,35],['35–40',35,40],['>40',40,1e9]];
+  const cnt=bins.map(([l,a,b])=>trees.filter(t=>t.maxD>a&&t.maxD<=b||(a===0&&t.maxD<=b)).length);const mx=Math.max(...cnt,1);
+  $('anHist').innerHTML=bins.map(([l],i)=>`<div class="b"><span class="lab">${l}</span><span><span class="bar" style="display:block;width:${cnt[i]/mx*100}%"></span></span><span class="v">${cnt[i]}</span></div>`).join('');
+  // sorensen between quadrats
+  const qsp=quads.map(q=>new Set(trees.filter(t=>t.q===q).map(t=>t.sp)));
+  let h='<thead><tr><th></th>'+quads.map(q=>`<th class="num">${esc(q)}</th>`).join('')+'</tr></thead><tbody>';
+  quads.forEach((q,i)=>{h+=`<tr><th>${esc(q)}</th>`+quads.map((r,j)=>{if(j>=i)return'<td class="num">'+(i===j?'·':'')+'</td>';const A=qsp[i],B=qsp[j];const c=[...A].filter(x=>B.has(x)).length;return`<td class="num">${(A.size+B.size)?fmt(2*c/(A.size+B.size)):'–'}</td>`}).join('')+'</tr>'});
+  $('anSim').innerHTML=h+'</tbody>';
+  $('anMsg').textContent=`วิเคราะห์ ${N} ต้น จาก ${nQ} quadrat (${fmt(ha,2)} ha)`+(bad.length?` · ข้ามแถวที่ไม่สมบูรณ์ ${bad.length} แถว (บรรทัด ${bad.slice(0,6).map(b=>b.line).join(', ')})`:'');
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+$('dataIn').value=EX;
+$('dataIn').addEventListener('input',()=>{if(isExample){isExample=false;$('dataBadge').textContent='ข้อมูลของคุณ'}});
+$('loadEx').addEventListener('click',()=>{$('dataIn').value=EX;isExample=true;$('dataBadge').textContent='ข้อมูลตัวอย่าง (สมมติ)';$('qN').value=8;analyze()});
+$('runAn').addEventListener('click',analyze);['qArea','qN','qClass'].forEach(i=>$(i).addEventListener('change',analyze));
+$('copyRes').addEventListener('click',()=>{const t=[...$('anTable').querySelectorAll('tr')].map(r=>[...r.children].map(c=>c.innerText).join('\t')).join('\n');
+  const done=()=>{$('anMsg').textContent='คัดลอกตารางแล้ว วางใน Google Sheet ได้ทันที'};
+  if(navigator.clipboard)navigator.clipboard.writeText(t).then(done,()=>{$('anMsg').textContent='คัดลอกไม่สำเร็จ ลองเลือกตารางแล้วกด Ctrl+C'});});
+analyze();
+
+/* ---------- library ---------- */
+const MAIN=[
+ ['ecolab-fieldtrip-2569.pdf','เอกสารประกอบการศึกษาภาคสนาม EcoLab 2569','คณาจารย์ผู้สอน ภาควิชาชีววิทยา จุฬาฯ','1.3 MB',null,'EcoLab 2569'],
+ ['rspg-permanent-plot.pdf','การวางแปลงถาวรเพื่อศึกษาระบบนิเวศป่าไม้','พงษ์ชัย ดำรงโรจน์วัฒนา, นิพาดา เรือนแก้ว ดิษยทัต · อพ.สธ.-จฬ.','16 MB','cover-plot.jpg'],
+ ['rspg-gps-essentials-google-earth.pdf','การใช้งาน GPS Essentials และ Google Earth Pro','พงษ์ชัย ดำรงโรจน์วัฒนา · อพ.สธ.-จฬ.','6 MB','cover-gps.jpg'],
+ ['less-school-training-manual.pdf','คู่มืออบรม LESS ภาคการจัดการของเสียและภาคป่าไม้สำหรับสถานศึกษา','สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาฯ','8.4 MB','cover-less.jpg'],
+ ['less-for-01-calculation-example.xlsx','ไฟล์คำนวณ LESS-FOR-01 พร้อมตัวอย่าง','อบก. · ตัดข้อมูลส่วนบุคคลออกแล้ว','2.2 MB',null,'XLSX'],
+ ['less-general-guideline-v05.pdf','LESS General Guideline เวอร์ชัน 5','องค์การบริหารจัดการก๊าซเรือนกระจก','0.4 MB',null,'LESS'],
+ ['tgo-tree-measurement-2021.pdf','วิธีการวัดต้นไม้','อบก. (2564)','2.6 MB',null,'วัดต้นไม้']];
+const BOOKS=[
+ ['book-plants.pdf','นานาพรรณไม้','พงษ์ชัย ดำรงโรจน์วัฒนา, นิพาดา เรือนแก้ว ดิษยทัต','7.6 MB','cover-plants.jpg'],
+ ['book-butterflies.pdf','ร้อยพันธุ์ผีเสื้อ','ชิษณุพงศ์ พานเทียน, ชัชวาล ใจซื่อกุล','5.2 MB','cover-butterflies.jpg'],
+ ['book-parasitoid-wasps.pdf','แตนเบียน','บัณฑิกา อารีย์กุล บุทเชอร์','1.4 MB','cover-wasps.jpg'],
+ ['book-amphibians.pdf','สัตว์สะเทินน้ำสะเทินบก','วิเชฏฐ์ คนซื่อ, ปรวีร์ พรหมโชติ','6.1 MB','cover-amphibians.jpg'],
+ ['book-birds.pdf','คล้องกล้อง...ไปส่อง (นก)','พงชัย หาญยุทธนากร, ศักรินทร์ แสนสุข','37 MB','cover-birds.jpg'],
+ ['book-bats.pdf','ค้างคาว','ธงชัย งามประเสริฐวงศ์ และคณะ','5.7 MB','cover-bats.jpg']];
+function lib(id,arr){$(id).innerHTML=arr.map(([f,t,by,sz,cov,txt])=>`<a class="doc" href="docs/${f}" target="_blank" rel="noopener"><div class="cov${cov?'':' txt'}">${cov?`<img src="assets/${cov}" alt="" loading="lazy">`:esc(txt)}</div><div class="meta"><h4>${esc(t)}</h4><span class="by">${esc(by)}</span><span class="dl">${f.endsWith('.xlsx')?'XLSX':'PDF'} · ${sz}</span></div></a>`).join('')}
+lib('libMain',MAIN);lib('libBooks',BOOKS);
+
+/* ---------- toc highlight ---------- */
+const links=[...document.querySelectorAll('#tocList a')];const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
+let last='';function act(){const y=innerHeight*0.25;let cur=secs[0];for(const s of secs){if(s&&s.getBoundingClientRect().top<=y)cur=s}
+  if(!cur||cur.id===last)return;last=cur.id;links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur.id));
+  const on=links.find(a=>a.classList.contains('on')),ol=$('tocList');if(on&&ol.scrollWidth>ol.clientWidth)ol.scrollLeft=on.parentElement.offsetLeft-ol.clientWidth/2+on.offsetWidth/2}
+addEventListener('scroll',act,{passive:true});addEventListener('resize',act);act();
+})();
+</script>
+</body>
+</html>

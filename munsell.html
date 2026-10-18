@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>Munsell Soil Color Charts · EcoLab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: field-book spread — chart plate on the left, chip detail card on the right; stacks on phones */
+:root{
+  --bg:#eef0ec; --surface:#fbfcfa; --ink:#1b201c; --muted:#5a635b; --line:#d3d8d0;
+  --accent:#2d5b4e; --accent-ink:#ffffff; --accent-soft:#dce8e2;
+  --plate:#767676; --plate-edge:#6a6a6a; --plate-ink:#f1f1f1;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121513; --surface:#1a1e1b; --ink:#e6eae5; --muted:#9aa49b; --line:#2d332e;
+  --accent:#8cc2ad; --accent-ink:#0f1a15; --accent-soft:#22332c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121513; --surface:#1a1e1b; --ink:#e6eae5; --muted:#9aa49b; --line:#2d332e;
+  --accent:#8cc2ad; --accent-ink:#0f1a15; --accent-soft:#22332c; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.6}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;display:grid;gap:28px}
+header{display:grid;gap:6px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--f-display);font-weight:700;font-size:clamp(28px,4.4vw,42px);line-height:1.15;margin:0;text-wrap:balance}
+h2{font-family:var(--f-display);font-weight:600;font-size:20px;margin:0;text-wrap:balance}
+h3{font-family:var(--f-display);font-weight:600;font-size:16px;margin:0}
+.lede{color:var(--muted);max-width:68ch;margin:0}
+/* toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tab{font-family:var(--f-mono);font-size:13px;font-weight:500;padding:6px 11px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;display:inline-flex;align-items:center;gap:7px}
+.tab .dot{width:10px;height:10px;border-radius:2px;flex:none}
+.tab[aria-selected="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.tab:hover{border-color:var(--accent)}
+button:focus-visible,input:focus-visible,.chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.search{display:flex;gap:6px;align-items:center}
+.search input{font-family:var(--f-mono);font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);width:150px}
+.btn{font-family:var(--f-body);font-size:13px;font-weight:500;padding:7px 12px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.msg{font-size:13px;color:var(--muted);min-height:1.2em}
+/* spread */
+.spread{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+@media (max-width:880px){.spread{grid-template-columns:minmax(0,1fr)}}
+.plate{background:var(--plate);border:1px solid var(--plate-edge);border-radius:4px;padding:18px 18px 14px;color:var(--plate-ink);display:grid;gap:12px;min-width:0}
+.plate-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.plate-hue{font-family:var(--f-display);font-weight:700;font-size:30px;letter-spacing:.02em;line-height:1}
+.plate-note{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.grid-scroll{overflow-x:auto}
+.grid{display:grid;gap:8px 8px;justify-content:center;align-items:center;min-width:0}
+.axis{font-family:var(--f-mono);font-size:12px;font-weight:500;text-align:center;font-variant-numeric:tabular-nums}
+.axis.row{text-align:right;padding-right:4px}
+.axis-title{font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+.chip{aspect-ratio:1.25/1;width:100%;max-width:100%;border:0;border-radius:2px;cursor:pointer;position:relative;padding:0;font-family:var(--f-mono);font-size:10.5px;font-weight:500;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px;box-shadow:0 1px 0 rgba(0,0,0,.25);transition:transform .12s ease}
+.chip span{opacity:0;transition:opacity .12s}
+.labels .chip span,.chip:hover span,.chip.sel span{opacity:1}
+.chip:hover{transform:scale(1.06);z-index:1}
+.chip.sel{outline:3px solid #ffffff;outline-offset:2px;z-index:2}
+.chip.hit{outline:3px dashed #ffffff;outline-offset:2px}
+.hole{aspect-ratio:1.25/1;border-radius:2px;border:1px dashed rgba(255,255,255,.18)}
+.plate-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:12px}
+.plate-foot label{display:inline-flex;gap:6px;align-items:center;cursor:pointer}
+/* detail card */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:14px;position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px)}
+@media (max-width:880px){.card{position:static}}
+.swatch{height:150px;border-radius:4px;border:1px solid var(--line)}
+.notation{font-family:var(--f-mono);font-size:28px;font-weight:600;line-height:1.1}
+.parts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.part{border:1px solid var(--line);border-radius:6px;padding:6px 8px}
+.part b{display:block;font-family:var(--f-mono);font-size:16px;font-weight:600}
+.part small{color:var(--muted);font-size:11.5px}
+dl.kv{display:grid;grid-template-columns:auto 1fr auto;gap:6px 10px;margin:0;align-items:center}
+dl.kv dt{color:var(--muted);font-size:13px}
+dl.kv dd{margin:0;font-family:var(--f-mono);font-size:13.5px;font-variant-numeric:tabular-nums;min-width:0;overflow-wrap:anywhere}
+.copy{font-size:12px;padding:3px 8px}
+.neigh{display:grid;gap:6px}
+.neigh-row{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.mini{aspect-ratio:1.4/1;border-radius:2px;border:0;cursor:pointer;font-family:var(--f-mono);font-size:9.5px;display:flex;align-items:flex-end;justify-content:center;padding:0 0 2px}
+.mini.cur{outline:2px solid var(--ink);outline-offset:1px}
+.mini.none{background:transparent;border:1px dashed var(--line);cursor:default}
+.muted{color:var(--muted)}
+/* matcher */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:20px;display:grid;gap:14px}
+.match-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:20px}
+@media (max-width:760px){.match-grid{grid-template-columns:minmax(0,1fr)}}
+.inputs{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.inputs input[type=color]{width:46px;height:36px;border:1px solid var(--line);border-radius:6px;background:var(--surface);padding:2px;cursor:pointer}
+.inputs input[type=text]{font-family:var(--f-mono);font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);width:110px}
+.photo{border:1px dashed var(--line);border-radius:6px;min-height:150px;display:grid;place-items:center;text-align:center;color:var(--muted);font-size:13px;padding:10px;position:relative;overflow:hidden}
+.photo canvas{max-width:100%;height:auto;cursor:crosshair;display:block;border-radius:4px}
+.results{display:grid;gap:8px}
+.res{display:grid;grid-template-columns:56px 44px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:6px;padding:6px;background:var(--bg);cursor:pointer;text-align:left;color:var(--ink);font-family:var(--f-body)}
+.res:hover{border-color:var(--accent)}
+.res i{display:block;height:34px;border-radius:3px}
+.res b{font-family:var(--f-mono);font-size:14px}
+.res small{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+/* guide */
+.guide{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.guide section{display:grid;gap:6px;align-content:start}
+.guide p,.guide ul{margin:0;color:var(--muted);font-size:14px}
+.guide ul{padding-left:18px}
+code{font-family:var(--f-mono);font-size:.92em;background:var(--accent-soft);padding:1px 5px;border-radius:4px;color:var(--ink)}
+.fine{font-size:12.5px;color:var(--muted);max-width:90ch;margin:0}
+@media (prefers-reduced-motion:reduce){.chip,.chip span{transition:none}.chip:hover{transform:none}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <nav style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:14px"><a href="index.html#tools" style="color:var(--accent)">← กลับไปคู่มือปฏิบัติการนิเวศวิทยาภาคสนาม</a><span class="muted">สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</span></nav>
+  <header>
+    <div class="eyebrow">Hue · Value / Chroma</div>
+    <h1>Munsell Soil Color Charts</h1>
+    <p class="lede">ชาร์ตสีดินตามระบบ Munsell 9 หน้า (10R ถึง 5Y และ Gley 1–2) แตะชิปเพื่อดูรหัสสี ค่า HEX/RGB/CIELAB และสีข้างเคียง หรือเทียบสีจากรูปถ่ายดินในส่วนด้านล่าง</p>
+  </header>
+
+  <div style="display:grid;gap:6px">
+  <div class="toolbar">
+    <div class="tabs" role="tablist" id="tabs" aria-label="หน้า Hue"></div>
+    <form class="search" id="searchForm" autocomplete="off">
+      <label for="q" class="muted" style="font-size:13px">ค้นหา</label>
+      <input id="q" type="text" placeholder="เช่น 10YR 3/2" aria-label="ค้นหารหัส Munsell">
+      <button class="btn" type="submit">ไป</button>
+    </form>
+  </div>
+  <div class="msg" id="msg" aria-live="polite"></div>
+  </div>
+
+  <div class="spread">
+    <div class="plate" id="plate">
+      <div class="plate-head">
+        <div class="plate-hue" id="plateHue">10YR</div>
+        <div class="plate-note" id="plateNote">Value ↓ · Chroma →</div>
+      </div>
+      <div class="grid-scroll"><div class="grid" id="grid"></div></div>
+      <div class="plate-foot">
+        <label for="showLabels"><input type="checkbox" id="showLabels"> แสดงรหัสบนชิป</label>
+        <span id="plateCount"></span>
+      </div>
+    </div>
+
+    <aside class="card" id="card" aria-live="polite">
+      <div class="swatch" id="swatch"></div>
+      <div>
+        <div class="notation" id="dNot">10YR 4/3</div>
+        <div class="muted" style="font-size:13px" id="dDesc"></div>
+      </div>
+      <div class="parts">
+        <div class="part"><small>Hue</small><b id="pH"></b></div>
+        <div class="part"><small>Value</small><b id="pV"></b></div>
+        <div class="part"><small>Chroma</small><b id="pC"></b></div>
+      </div>
+      <dl class="kv">
+        <dt>Munsell</dt><dd id="kN"></dd><button class="btn copy" data-copy="kN">คัดลอก</button>
+        <dt>HEX</dt><dd id="kHex"></dd><button class="btn copy" data-copy="kHex">คัดลอก</button>
+        <dt>RGB</dt><dd id="kRgb"></dd><button class="btn copy" data-copy="kRgb">คัดลอก</button>
+        <dt>CIELAB</dt><dd id="kLab"></dd><button class="btn copy" data-copy="kLab">คัดลอก</button>
+      </dl>
+      <div class="neigh">
+        <h3>ค่า Value/Chroma เดียวกันในหน้า Hue ข้างเคียง</h3>
+        <div class="neigh-row" id="neigh"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="panel">
+    <div style="display:grid;gap:4px">
+      <h2>เทียบสีจากรูปถ่ายหรือค่าสี</h2>
+      <p class="fine">อัปโหลดรูปดินแล้วแตะจุดที่ต้องการ (เฉลี่ยพื้นที่ 9×9 พิกเซล) หรือใส่ค่า HEX ระบบจะหาชิปที่ใกล้ที่สุด 4 อันดับด้วยระยะสี ΔE*₀₀</p>
+    </div>
+    <div class="match-grid">
+      <div style="display:grid;gap:10px">
+        <div class="inputs">
+          <input type="color" id="picker" value="#6b5440" aria-label="เลือกสี">
+          <input type="text" id="hexIn" value="#6b5440" aria-label="ค่า HEX">
+          <label class="btn" for="file" style="cursor:pointer">อัปโหลดรูปดิน</label>
+          <input type="file" id="file" accept="image/*" hidden>
+        </div>
+        <div class="photo" id="photo">ยังไม่มีรูป · ตัวอย่างด้านขวาใช้สี #6b5440</div>
+      </div>
+      <div class="results" id="results"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>วิธีอ่านและใช้ชาร์ต</h2>
+    <div class="guide">
+      <section>
+        <h3>อ่านรหัสอย่างไร</h3>
+        <p><code>10YR 4/3</code> คือ Hue <b>10YR</b>, Value <b>4</b>, Chroma <b>3</b></p>
+        <ul>
+          <li><b>Hue</b> โทนสีหลัก R = แดง, YR = เหลืองแดง, Y = เหลือง</li>
+          <li><b>Value</b> ความสว่าง 0 (ดำ) ถึง 10 (ขาว)</li>
+          <li><b>Chroma</b> ความอิ่มตัว ยิ่งมากยิ่งสด 0 = สีเทากลาง</li>
+        </ul>
+      </section>
+      <section>
+        <h3>การเทียบสีในสนาม</h3>
+        <ul>
+          <li>บันทึกทั้งสภาพ <b>ชื้น (moist)</b> และ <b>แห้ง (dry)</b> แยกกัน</li>
+          <li>ใช้แสงแดดธรรมชาติ หลีกเลี่ยงช่วงเช้าตรู่/เย็นและแดดจัดตรง</li>
+          <li>ถ้าสีอยู่ระหว่างชิป ให้เลือกชิปที่ใกล้ที่สุด ไม่ปัดเป็นทศนิยมเอง</li>
+          <li>ใช้ชิปที่ตรงกับดินที่บี้แล้ว (crushed) และผิวก้อน (ped face) ตามที่ต้องการบันทึก</li>
+        </ul>
+      </section>
+      <section>
+        <h3>หน้า Gley</h3>
+        <p>ใช้กับดินที่ขาดออกซิเจนจากการแช่ขังน้ำนาน มีสีเทา เขียว หรือฟ้าอมเทา สีกลาง (neutral) เขียนเป็น <code>N 5/</code> โดยไม่มีค่า Chroma</p>
+        <p>Gley 1 = N, 10Y–5G · Gley 2 = 10G–5PB</p>
+      </section>
+    </div>
+    <p class="fine">หมายเหตุ: สีบนจอคำนวณจากข้อมูล Munsell Renotation (1943) ภายใต้แหล่งแสง C แปลงเป็น sRGB ด้วย Bradford adaptation ค่า Value 2.5 ได้จากการประมาณค่าระหว่างแถว ชิปที่อยู่นอกขอบเขตสี sRGB ถูกเว้นว่างไว้ สีที่เห็นขึ้นกับจอและการตั้งค่าความสว่าง ชิปในหน้านี้จึงใช้ศึกษาและอ้างอิงได้ แต่ใช้แทนชาร์ตกระดาษจริงในการบรรยายดินอย่างเป็นทางการไม่ได้ รูปถ่ายจากกล้องมือถือมี white balance ที่คลาดเคลื่อน ผลการเทียบจากรูปจึงเป็นค่าประมาณเท่านั้น</p>
+  </div>
+</div>
+
+<footer style="max-width:1180px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-left,0px)) 40px;color:var(--muted);font-size:13.5px"><b style="color:var(--ink)">สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</b> · ส่วนหนึ่งของคู่มือปฏิบัติการนิเวศวิทยาภาคสนาม ภาควิชาชีววิทยา คณะวิทยาศาสตร์ จุฬาฯ</footer>
+<script>
+const PAGES = [{"id":"10R","title":"10R","cols":[1,2,3,4,6,8],"chips":[{"n":"10R 8/1","h":"10R","v":8,"c":1,"hex":"#d0c6c3","lab":[80.5,2.9,2.7]},{"n":"10R 8/2","h":"10R","v":8,"c":2,"hex":"#d7c4be","lab":[80.5,5.8,5.4]},{"n":"10R 8/3","h":"10R","v":8,"c":3,"hex":"#e2c1b6","lab":[80.5,10.3,9.8]},{"n":"10R 8/4","h":"10R","v":8,"c":4,"hex":"#ecbeae","lab":[80.5,14.5,14.1]},{"n":"10R 8/6","h":"10R","v":8,"c":6,"hex":"#fdb8a0","lab":[80.5,22.1,22.1]},{"n":"10R 7/1","h":"10R","v":7,"c":1,"hex":"#b6aba8","lab":[70.9,3.5,3.1]},{"n":"10R 7/2","h":"10R","v":7,"c":2,"hex":"#bfa9a2","lab":[70.9,6.9,6.2]},{"n":"10R 7/3","h":"10R","v":7,"c":3,"hex":"#c8a69c","lab":[70.8,10.8,10.0]},{"n":"10R 7/4","h":"10R","v":7,"c":4,"hex":"#d0a395","lab":[70.8,14.5,13.8]},{"n":"10R 7/6","h":"10R","v":7,"c":6,"hex":"#e09e88","lab":[70.8,22.0,21.4]},{"n":"10R 7/8","h":"10R","v":7,"c":8,"hex":"#ef9779","lab":[70.8,29.7,29.5]},{"n":"10R 6/1","h":"10R","v":6,"c":1,"hex":"#9d918e","lab":[61.0,3.9,3.3]},{"n":"10R 6/2","h":"10R","v":6,"c":2,"hex":"#a58e88","lab":[61.0,7.6,6.6]},{"n":"10R 6/3","h":"10R","v":6,"c":3,"hex":"#ae8c82","lab":[61.0,11.5,10.3]},{"n":"10R 6/4","h":"10R","v":6,"c":4,"hex":"#b6897b","lab":[61.0,15.3,14.1]},{"n":"10R 6/6","h":"10R","v":6,"c":6,"hex":"#c4846f","lab":[61.0,22.4,21.3]},{"n":"10R 6/8","h":"10R","v":6,"c":8,"hex":"#d17d62","lab":[61.0,29.7,28.9]},{"n":"10R 5/1","h":"10R","v":5,"c":1,"hex":"#837774","lab":[51.0,4.0,3.2]},{"n":"10R 5/2","h":"10R","v":5,"c":2,"hex":"#8b756f","lab":[51.0,7.7,6.5]},{"n":"10R 5/3","h":"10R","v":5,"c":3,"hex":"#947269","lab":[51.0,11.9,10.2]},{"n":"10R 5/4","h":"10R","v":5,"c":4,"hex":"#9b6f62","lab":[51.0,15.8,14.0]},{"n":"10R 5/6","h":"10R","v":5,"c":6,"hex":"#a96955","lab":[51.0,23.7,21.8]},{"n":"10R 5/8","h":"10R","v":5,"c":8,"hex":"#b66248","lab":[51.0,31.4,29.9]},{"n":"10R 4/1","h":"10R","v":4,"c":1,"hex":"#6a5d5b","lab":[40.7,4.7,3.4]},{"n":"10R 4/2","h":"10R","v":4,"c":2,"hex":"#735b55","lab":[40.7,9.0,6.9]},{"n":"10R 4/3","h":"10R","v":4,"c":3,"hex":"#7b584f","lab":[40.7,13.4,10.5]},{"n":"10R 4/4","h":"10R","v":4,"c":4,"hex":"#82554a","lab":[40.7,17.5,14.2]},{"n":"10R 4/6","h":"10R","v":4,"c":6,"hex":"#8e4f3e","lab":[40.7,24.9,21.4]},{"n":"10R 4/8","h":"10R","v":4,"c":8,"hex":"#9a4832","lab":[40.7,32.5,29.1]},{"n":"10R 3/1","h":"10R","v":3,"c":1,"hex":"#524542","lab":[30.4,5.1,3.5]},{"n":"10R 3/2","h":"10R","v":3,"c":2,"hex":"#5a423d","lab":[30.4,9.8,7.1]},{"n":"10R 3/3","h":"10R","v":3,"c":3,"hex":"#613f38","lab":[30.4,14.3,10.3]},{"n":"10R 3/4","h":"10R","v":3,"c":4,"hex":"#683c33","lab":[30.3,18.4,13.8]},{"n":"10R 3/6","h":"10R","v":3,"c":6,"hex":"#733529","lab":[30.3,26.3,20.5]},{"n":"10R 3/8","h":"10R","v":3,"c":8,"hex":"#7e2c1e","lab":[30.3,34.4,27.8]},{"n":"10R 2.5/1","h":"10R","v":2.5,"c":1,"hex":"#463937","lab":[25.2,5.2,3.1]},{"n":"10R 2.5/2","h":"10R","v":2.5,"c":2,"hex":"#4e3633","lab":[25.2,10.0,6.4]},{"n":"10R 2.5/3","h":"10R","v":2.5,"c":3,"hex":"#55332e","lab":[25.2,14.5,9.3]},{"n":"10R 2.5/4","h":"10R","v":2.5,"c":4,"hex":"#5b302a","lab":[25.2,18.8,12.4]}]},{"id":"2.5YR","title":"2.5YR","cols":[1,2,3,4,6,8],"chips":[{"n":"2.5YR 8/1","h":"2.5YR","v":8,"c":1,"hex":"#d0c6c1","lab":[80.5,2.8,3.6]},{"n":"2.5YR 8/2","h":"2.5YR","v":8,"c":2,"hex":"#d8c4bb","lab":[80.5,5.5,7.2]},{"n":"2.5YR 8/3","h":"2.5YR","v":8,"c":3,"hex":"#e2c1b1","lab":[80.5,9.4,12.3]},{"n":"2.5YR 8/4","h":"2.5YR","v":8,"c":4,"hex":"#ecbea8","lab":[80.5,13.0,17.5]},{"n":"2.5YR 8/6","h":"2.5YR","v":8,"c":6,"hex":"#fbb998","lab":[80.5,19.5,26.4]},{"n":"2.5YR 7/1","h":"2.5YR","v":7,"c":1,"hex":"#b7aba6","lab":[70.9,3.3,3.9]},{"n":"2.5YR 7/2","h":"2.5YR","v":7,"c":2,"hex":"#bfa99f","lab":[70.9,6.4,7.9]},{"n":"2.5YR 7/3","h":"2.5YR","v":7,"c":3,"hex":"#c8a798","lab":[70.9,9.8,12.3]},{"n":"2.5YR 7/4","h":"2.5YR","v":7,"c":4,"hex":"#d0a490","lab":[70.9,13.1,16.7]},{"n":"2.5YR 7/6","h":"2.5YR","v":7,"c":6,"hex":"#df9f7f","lab":[70.8,19.9,26.0]},{"n":"2.5YR 7/8","h":"2.5YR","v":7,"c":8,"hex":"#ec9a6f","lab":[70.8,26.2,35.0]},{"n":"2.5YR 6/1","h":"2.5YR","v":6,"c":1,"hex":"#9d918c","lab":[61.0,3.6,4.2]},{"n":"2.5YR 6/2","h":"2.5YR","v":6,"c":2,"hex":"#a68f85","lab":[61.0,7.0,8.4]},{"n":"2.5YR 6/3","h":"2.5YR","v":6,"c":3,"hex":"#ae8c7e","lab":[61.0,10.3,12.6]},{"n":"2.5YR 6/4","h":"2.5YR","v":6,"c":4,"hex":"#b58a76","lab":[61.0,13.5,16.8]},{"n":"2.5YR 6/6","h":"2.5YR","v":6,"c":6,"hex":"#c38567","lab":[61.0,20.4,25.8]},{"n":"2.5YR 6/8","h":"2.5YR","v":6,"c":8,"hex":"#cf8057","lab":[61.0,26.8,34.7]},{"n":"2.5YR 5/1","h":"2.5YR","v":5,"c":1,"hex":"#837773","lab":[51.0,3.7,4.1]},{"n":"2.5YR 5/2","h":"2.5YR","v":5,"c":2,"hex":"#8b756c","lab":[51.0,7.1,8.2]},{"n":"2.5YR 5/3","h":"2.5YR","v":5,"c":3,"hex":"#937265","lab":[51.0,10.8,12.4]},{"n":"2.5YR 5/4","h":"2.5YR","v":5,"c":4,"hex":"#9a705e","lab":[51.0,14.2,16.7]},{"n":"2.5YR 5/6","h":"2.5YR","v":5,"c":6,"hex":"#a76b4e","lab":[51.0,21.2,26.0]},{"n":"2.5YR 5/8","h":"2.5YR","v":5,"c":8,"hex":"#b3653d","lab":[51.0,27.9,35.9]},{"n":"2.5YR 4/1","h":"2.5YR","v":4,"c":1,"hex":"#6a5d59","lab":[40.7,4.3,4.3]},{"n":"2.5YR 4/2","h":"2.5YR","v":4,"c":2,"hex":"#725b52","lab":[40.7,8.2,8.7]},{"n":"2.5YR 4/3","h":"2.5YR","v":4,"c":3,"hex":"#7a584b","lab":[40.7,12.1,12.9]},{"n":"2.5YR 4/4","h":"2.5YR","v":4,"c":4,"hex":"#815644","lab":[40.7,15.7,17.4]},{"n":"2.5YR 4/6","h":"2.5YR","v":4,"c":6,"hex":"#8c5136","lab":[40.7,22.1,26.0]},{"n":"2.5YR 4/8","h":"2.5YR","v":4,"c":8,"hex":"#964b26","lab":[40.7,28.4,35.4]},{"n":"2.5YR 3/1","h":"2.5YR","v":3,"c":1,"hex":"#514541","lab":[30.4,4.6,4.2]},{"n":"2.5YR 3/2","h":"2.5YR","v":3,"c":2,"hex":"#59423b","lab":[30.4,8.8,8.5]},{"n":"2.5YR 3/3","h":"2.5YR","v":3,"c":3,"hex":"#604035","lab":[30.4,12.6,12.5]},{"n":"2.5YR 3/4","h":"2.5YR","v":3,"c":4,"hex":"#663d2e","lab":[30.4,16.1,16.7]},{"n":"2.5YR 3/6","h":"2.5YR","v":3,"c":6,"hex":"#713820","lab":[30.3,23.1,25.7]},{"n":"2.5YR 3/8","h":"2.5YR","v":3,"c":8,"hex":"#79320f","lab":[30.3,29.3,35.6]},{"n":"2.5YR 2.5/1","h":"2.5YR","v":2.5,"c":1,"hex":"#453936","lab":[25.3,4.7,3.8]},{"n":"2.5YR 2.5/2","h":"2.5YR","v":2.5,"c":2,"hex":"#4d3730","lab":[25.2,9.0,7.8]},{"n":"2.5YR 2.5/3","h":"2.5YR","v":2.5,"c":3,"hex":"#54342b","lab":[25.2,13.1,11.6]},{"n":"2.5YR 2.5/4","h":"2.5YR","v":2.5,"c":4,"hex":"#5a3125","lab":[25.2,16.9,15.7]}]},{"id":"5YR","title":"5YR","cols":[1,2,3,4,6,8],"chips":[{"n":"5YR 8/1","h":"5YR","v":8,"c":1,"hex":"#d1c6bf","lab":[80.5,2.5,4.8]},{"n":"5YR 8/2","h":"5YR","v":8,"c":2,"hex":"#d9c4b6","lab":[80.5,4.9,9.5]},{"n":"5YR 8/3","h":"5YR","v":8,"c":3,"hex":"#e1c2ac","lab":[80.5,7.8,14.9]},{"n":"5YR 8/4","h":"5YR","v":8,"c":4,"hex":"#e9c0a2","lab":[80.5,10.5,20.4]},{"n":"5YR 8/6","h":"5YR","v":8,"c":6,"hex":"#f7bc90","lab":[80.5,15.9,30.6]},{"n":"5YR 7/1","h":"5YR","v":7,"c":1,"hex":"#b7aba5","lab":[70.9,2.9,4.9]},{"n":"5YR 7/2","h":"5YR","v":7,"c":2,"hex":"#bfa99c","lab":[70.9,5.5,9.8]},{"n":"5YR 7/3","h":"5YR","v":7,"c":3,"hex":"#c7a793","lab":[70.9,8.3,14.8]},{"n":"5YR 7/4","h":"5YR","v":7,"c":4,"hex":"#cea58a","lab":[70.9,10.9,19.9]},{"n":"5YR 7/6","h":"5YR","v":7,"c":6,"hex":"#dba177","lab":[70.9,16.4,30.5]},{"n":"5YR 7/8","h":"5YR","v":7,"c":8,"hex":"#e69d64","lab":[70.9,21.3,40.5]},{"n":"5YR 6/1","h":"5YR","v":6,"c":1,"hex":"#9d918b","lab":[61.0,3.1,5.0]},{"n":"5YR 6/2","h":"5YR","v":6,"c":2,"hex":"#a58f82","lab":[61.0,5.9,10.0]},{"n":"5YR 6/3","h":"5YR","v":6,"c":3,"hex":"#ac8d7a","lab":[61.0,8.7,14.8]},{"n":"5YR 6/4","h":"5YR","v":6,"c":4,"hex":"#b38b71","lab":[61.0,11.4,19.8]},{"n":"5YR 6/6","h":"5YR","v":6,"c":6,"hex":"#c0875e","lab":[61.0,16.9,30.5]},{"n":"5YR 6/8","h":"5YR","v":6,"c":8,"hex":"#ca834b","lab":[61.0,22.3,41.2]},{"n":"5YR 5/1","h":"5YR","v":5,"c":1,"hex":"#837771","lab":[51.0,3.2,4.9]},{"n":"5YR 5/2","h":"5YR","v":5,"c":2,"hex":"#8a7569","lab":[51.0,6.1,9.8]},{"n":"5YR 5/3","h":"5YR","v":5,"c":3,"hex":"#927361","lab":[51.0,9.1,14.8]},{"n":"5YR 5/4","h":"5YR","v":5,"c":4,"hex":"#987158","lab":[51.0,11.9,19.9]},{"n":"5YR 5/6","h":"5YR","v":5,"c":6,"hex":"#a46d46","lab":[51.0,17.8,30.8]},{"n":"5YR 5/8","h":"5YR","v":5,"c":8,"hex":"#ae6931","lab":[51.0,23.1,41.8]},{"n":"5YR 4/1","h":"5YR","v":4,"c":1,"hex":"#6a5e58","lab":[40.7,3.7,5.1]},{"n":"5YR 4/2","h":"5YR","v":4,"c":2,"hex":"#715c4f","lab":[40.7,6.9,10.4]},{"n":"5YR 4/3","h":"5YR","v":4,"c":3,"hex":"#795947","lab":[40.7,10.2,15.3]},{"n":"5YR 4/4","h":"5YR","v":4,"c":4,"hex":"#7f573f","lab":[40.7,13.3,20.6]},{"n":"5YR 4/6","h":"5YR","v":4,"c":6,"hex":"#88532f","lab":[40.7,18.5,30.4]},{"n":"5YR 4/8","h":"5YR","v":4,"c":8,"hex":"#904f1b","lab":[40.7,23.3,40.6]},{"n":"5YR 3/1","h":"5YR","v":3,"c":1,"hex":"#514540","lab":[30.4,3.9,4.9]},{"n":"5YR 3/2","h":"5YR","v":3,"c":2,"hex":"#584338","lab":[30.4,7.3,10.0]},{"n":"5YR 3/3","h":"5YR","v":3,"c":3,"hex":"#5e4132","lab":[30.4,10.5,14.5]},{"n":"5YR 3/4","h":"5YR","v":3,"c":4,"hex":"#633f2a","lab":[30.4,13.4,19.3]},{"n":"5YR 3/6","h":"5YR","v":3,"c":6,"hex":"#6d3b19","lab":[30.4,19.1,29.9]},{"n":"5YR 3/8","h":"5YR","v":3,"c":8,"hex":"#743700","lab":[30.4,23.7,41.7]},{"n":"5YR 2.5/1","h":"5YR","v":2.5,"c":1,"hex":"#453a35","lab":[25.3,4.0,4.6]},{"n":"5YR 2.5/2","h":"5YR","v":2.5,"c":2,"hex":"#4c372e","lab":[25.3,7.5,9.3]},{"n":"5YR 2.5/3","h":"5YR","v":2.5,"c":3,"hex":"#523527","lab":[25.2,11.0,13.9]},{"n":"5YR 2.5/4","h":"5YR","v":2.5,"c":4,"hex":"#573320","lab":[25.2,14.1,19.0]}]},{"id":"7.5YR","title":"7.5YR","cols":[1,2,3,4,6,8],"chips":[{"n":"7.5YR 8/1","h":"7.5YR","v":8,"c":1,"hex":"#d0c6bd","lab":[80.5,2.0,5.7]},{"n":"7.5YR 8/2","h":"7.5YR","v":8,"c":2,"hex":"#d8c5b3","lab":[80.5,3.8,11.4]},{"n":"7.5YR 8/3","h":"7.5YR","v":8,"c":3,"hex":"#dfc3a8","lab":[80.5,5.9,17.1]},{"n":"7.5YR 8/4","h":"7.5YR","v":8,"c":4,"hex":"#e6c29e","lab":[80.5,7.8,22.9]},{"n":"7.5YR 8/6","h":"7.5YR","v":8,"c":6,"hex":"#f3be89","lab":[80.6,12.1,34.2]},{"n":"7.5YR 8/8","h":"7.5YR","v":8,"c":8,"hex":"#febb71","lab":[80.6,16.2,46.5]},{"n":"7.5YR 7/1","h":"7.5YR","v":7,"c":1,"hex":"#b6aca3","lab":[70.9,2.3,5.7]},{"n":"7.5YR 7/2","h":"7.5YR","v":7,"c":2,"hex":"#beaa99","lab":[70.9,4.3,11.4]},{"n":"7.5YR 7/3","h":"7.5YR","v":7,"c":3,"hex":"#c5a88f","lab":[70.9,6.6,16.9]},{"n":"7.5YR 7/4","h":"7.5YR","v":7,"c":4,"hex":"#cba785","lab":[70.9,8.7,22.6]},{"n":"7.5YR 7/6","h":"7.5YR","v":7,"c":6,"hex":"#d7a470","lab":[70.9,12.7,34.2]},{"n":"7.5YR 7/8","h":"7.5YR","v":7,"c":8,"hex":"#e1a15a","lab":[70.9,16.5,45.5]},{"n":"7.5YR 6/1","h":"7.5YR","v":6,"c":1,"hex":"#9c928a","lab":[61.1,2.5,5.6]},{"n":"7.5YR 6/2","h":"7.5YR","v":6,"c":2,"hex":"#a49080","lab":[61.1,4.7,11.4]},{"n":"7.5YR 6/3","h":"7.5YR","v":6,"c":3,"hex":"#aa8e76","lab":[61.1,7.0,16.7]},{"n":"7.5YR 6/4","h":"7.5YR","v":6,"c":4,"hex":"#b18d6d","lab":[61.1,9.2,22.3]},{"n":"7.5YR 6/6","h":"7.5YR","v":6,"c":6,"hex":"#bc8958","lab":[61.1,13.4,34.0]},{"n":"7.5YR 6/8","h":"7.5YR","v":6,"c":8,"hex":"#c58641","lab":[61.1,17.5,45.9]},{"n":"7.5YR 5/1","h":"7.5YR","v":5,"c":1,"hex":"#827870","lab":[51.0,2.6,5.5]},{"n":"7.5YR 5/2","h":"7.5YR","v":5,"c":2,"hex":"#897667","lab":[51.0,4.9,11.0]},{"n":"7.5YR 5/3","h":"7.5YR","v":5,"c":3,"hex":"#90745e","lab":[51.0,7.4,16.6]},{"n":"7.5YR 5/4","h":"7.5YR","v":5,"c":4,"hex":"#967354","lab":[51.0,9.7,22.4]},{"n":"7.5YR 5/6","h":"7.5YR","v":5,"c":6,"hex":"#a16f3f","lab":[51.0,14.4,34.5]},{"n":"7.5YR 5/8","h":"7.5YR","v":5,"c":8,"hex":"#a96c27","lab":[51.0,18.3,46.4]},{"n":"7.5YR 4/1","h":"7.5YR","v":4,"c":1,"hex":"#695e57","lab":[40.7,3.0,5.7]},{"n":"7.5YR 4/2","h":"7.5YR","v":4,"c":2,"hex":"#705c4d","lab":[40.7,5.7,11.6]},{"n":"7.5YR 4/3","h":"7.5YR","v":4,"c":3,"hex":"#775a44","lab":[40.7,8.3,17.3]},{"n":"7.5YR 4/4","h":"7.5YR","v":4,"c":4,"hex":"#7c593a","lab":[40.7,10.7,23.3]},{"n":"7.5YR 4/6","h":"7.5YR","v":4,"c":6,"hex":"#845628","lab":[40.7,14.7,34.0]},{"n":"7.5YR 4/8","h":"7.5YR","v":4,"c":8,"hex":"#8b530f","lab":[40.7,18.1,45.4]},{"n":"7.5YR 3/1","h":"7.5YR","v":3,"c":1,"hex":"#50463f","lab":[30.4,3.1,5.4]},{"n":"7.5YR 3/2","h":"7.5YR","v":3,"c":2,"hex":"#574437","lab":[30.4,5.8,11.1]},{"n":"7.5YR 3/3","h":"7.5YR","v":3,"c":3,"hex":"#5c422f","lab":[30.4,8.3,16.2]},{"n":"7.5YR 3/4","h":"7.5YR","v":3,"c":4,"hex":"#604126","lab":[30.4,10.6,21.8]},{"n":"7.5YR 3/6","h":"7.5YR","v":3,"c":6,"hex":"#683e11","lab":[30.4,14.7,33.4]},{"n":"7.5YR 3/8","h":"7.5YR","v":3,"c":8,"hex":"#6e3b00","lab":[30.4,18.1,46.2]},{"n":"7.5YR 2.5/1","h":"7.5YR","v":2.5,"c":1,"hex":"#443a34","lab":[25.3,3.2,5.2]},{"n":"7.5YR 2.5/2","h":"7.5YR","v":2.5,"c":2,"hex":"#4a382c","lab":[25.3,5.9,10.7]},{"n":"7.5YR 2.5/3","h":"7.5YR","v":2.5,"c":3,"hex":"#503724","lab":[25.3,8.6,16.0]},{"n":"7.5YR 2.5/4","h":"7.5YR","v":2.5,"c":4,"hex":"#54351b","lab":[25.3,11.0,22.0]}]},{"id":"10YR","title":"10YR","cols":[1,2,3,4,6,8],"chips":[{"n":"10YR 8/1","h":"10YR","v":8,"c":1,"hex":"#cfc7bc","lab":[80.5,1.0,6.7]},{"n":"10YR 8/2","h":"10YR","v":8,"c":2,"hex":"#d6c6af","lab":[80.5,2.0,13.3]},{"n":"10YR 8/3","h":"10YR","v":8,"c":3,"hex":"#dcc5a4","lab":[80.6,3.3,19.5]},{"n":"10YR 8/4","h":"10YR","v":8,"c":4,"hex":"#e2c498","lab":[80.6,4.4,25.7]},{"n":"10YR 8/6","h":"10YR","v":8,"c":6,"hex":"#ecc181","lab":[80.6,7.2,38.1]},{"n":"10YR 8/8","h":"10YR","v":8,"c":8,"hex":"#f5bf68","lab":[80.6,9.9,50.9]},{"n":"10YR 7/1","h":"10YR","v":7,"c":1,"hex":"#b5aca2","lab":[70.9,1.3,6.5]},{"n":"10YR 7/2","h":"10YR","v":7,"c":2,"hex":"#bcab96","lab":[70.9,2.4,13.1]},{"n":"10YR 7/3","h":"10YR","v":7,"c":3,"hex":"#c2aa8b","lab":[70.9,3.8,19.3]},{"n":"10YR 7/4","h":"10YR","v":7,"c":4,"hex":"#c7a97f","lab":[70.9,5.1,25.6]},{"n":"10YR 7/6","h":"10YR","v":7,"c":6,"hex":"#d1a768","lab":[70.9,7.9,38.1]},{"n":"10YR 7/8","h":"10YR","v":7,"c":8,"hex":"#d9a450","lab":[70.9,10.6,50.3]},{"n":"10YR 6/1","h":"10YR","v":6,"c":1,"hex":"#9b9288","lab":[61.1,1.5,6.5]},{"n":"10YR 6/2","h":"10YR","v":6,"c":2,"hex":"#a1917d","lab":[61.1,2.8,13.0]},{"n":"10YR 6/3","h":"10YR","v":6,"c":3,"hex":"#a79072","lab":[61.1,4.3,19.0]},{"n":"10YR 6/4","h":"10YR","v":6,"c":4,"hex":"#ac8f67","lab":[61.1,5.6,25.1]},{"n":"10YR 6/6","h":"10YR","v":6,"c":6,"hex":"#b68c50","lab":[61.1,8.9,38.0]},{"n":"10YR 6/8","h":"10YR","v":6,"c":8,"hex":"#be8a36","lab":[61.1,11.6,50.7]},{"n":"10YR 5/1","h":"10YR","v":5,"c":1,"hex":"#81786f","lab":[51.0,1.7,6.3]},{"n":"10YR 5/2","h":"10YR","v":5,"c":2,"hex":"#877764","lab":[51.0,3.2,12.6]},{"n":"10YR 5/3","h":"10YR","v":5,"c":3,"hex":"#8d765a","lab":[51.0,4.9,18.8]},{"n":"10YR 5/4","h":"10YR","v":5,"c":4,"hex":"#92744f","lab":[51.0,6.5,25.2]},{"n":"10YR 5/6","h":"10YR","v":5,"c":6,"hex":"#9b7237","lab":[51.0,9.7,38.4]},{"n":"10YR 5/8","h":"10YR","v":5,"c":8,"hex":"#a2701b","lab":[51.0,12.4,50.8]},{"n":"10YR 4/1","h":"10YR","v":4,"c":1,"hex":"#685f56","lab":[40.7,1.9,6.5]},{"n":"10YR 4/2","h":"10YR","v":4,"c":2,"hex":"#6e5d4b","lab":[40.8,3.6,13.2]},{"n":"10YR 4/3","h":"10YR","v":4,"c":3,"hex":"#735c41","lab":[40.8,5.5,19.2]},{"n":"10YR 4/4","h":"10YR","v":4,"c":4,"hex":"#785b36","lab":[40.8,7.2,25.7]},{"n":"10YR 4/6","h":"10YR","v":4,"c":6,"hex":"#7f5921","lab":[40.8,10.2,37.4]},{"n":"10YR 4/8","h":"10YR","v":4,"c":8,"hex":"#845700","lab":[40.8,12.5,49.5]},{"n":"10YR 3/1","h":"10YR","v":3,"c":1,"hex":"#4f463e","lab":[30.4,2.1,6.0]},{"n":"10YR 3/2","h":"10YR","v":3,"c":2,"hex":"#544535","lab":[30.4,3.8,12.1]},{"n":"10YR 3/3","h":"10YR","v":3,"c":3,"hex":"#59442c","lab":[30.4,5.6,17.7]},{"n":"10YR 3/4","h":"10YR","v":3,"c":4,"hex":"#5d4322","lab":[30.4,7.2,23.8]},{"n":"10YR 3/6","h":"10YR","v":3,"c":6,"hex":"#634008","lab":[30.4,10.3,36.7]},{"n":"10YR 3/8","h":"10YR","v":3,"c":8,"hex":"#683f00","lab":[30.4,12.7,49.7]},{"n":"10YR 2.5/1","h":"10YR","v":2.5,"c":1,"hex":"#433a33","lab":[25.3,2.2,5.8]},{"n":"10YR 2.5/2","h":"10YR","v":2.5,"c":2,"hex":"#48392a","lab":[25.3,4.0,11.7]},{"n":"10YR 2.5/3","h":"10YR","v":2.5,"c":3,"hex":"#4d3821","lab":[25.3,6.1,17.7]},{"n":"10YR 2.5/4","h":"10YR","v":2.5,"c":4,"hex":"#513716","lab":[25.3,7.8,24.4]}]},{"id":"2.5Y","title":"2.5Y","cols":[1,2,3,4,6,8],"chips":[{"n":"2.5Y 8/1","h":"2.5Y","v":8,"c":1,"hex":"#cec7ba","lab":[80.5,-0.0,7.5]},{"n":"2.5Y 8/2","h":"2.5Y","v":8,"c":2,"hex":"#d3c7ac","lab":[80.6,-0.1,14.9]},{"n":"2.5Y 8/3","h":"2.5Y","v":8,"c":3,"hex":"#d8c6a0","lab":[80.6,0.4,21.3]},{"n":"2.5Y 8/4","h":"2.5Y","v":8,"c":4,"hex":"#ddc694","lab":[80.6,0.8,27.7]},{"n":"2.5Y 8/6","h":"2.5Y","v":8,"c":6,"hex":"#e5c47b","lab":[80.6,2.2,41.1]},{"n":"2.5Y 8/8","h":"2.5Y","v":8,"c":8,"hex":"#edc361","lab":[80.6,3.8,54.0]},{"n":"2.5Y 7/1","h":"2.5Y","v":7,"c":1,"hex":"#b3ada0","lab":[70.9,0.1,7.2]},{"n":"2.5Y 7/2","h":"2.5Y","v":7,"c":2,"hex":"#b9ac93","lab":[70.9,0.2,14.5]},{"n":"2.5Y 7/3","h":"2.5Y","v":7,"c":3,"hex":"#beac88","lab":[70.9,1.1,20.9]},{"n":"2.5Y 7/4","h":"2.5Y","v":7,"c":4,"hex":"#c3ab7c","lab":[70.9,1.8,27.6]},{"n":"2.5Y 7/6","h":"2.5Y","v":7,"c":6,"hex":"#cba963","lab":[70.9,3.3,40.7]},{"n":"2.5Y 7/8","h":"2.5Y","v":7,"c":8,"hex":"#d1a848","lab":[70.9,4.7,53.8]},{"n":"2.5Y 6/1","h":"2.5Y","v":6,"c":1,"hex":"#999387","lab":[61.1,0.3,7.1]},{"n":"2.5Y 6/2","h":"2.5Y","v":6,"c":2,"hex":"#9e927a","lab":[61.1,0.6,14.2]},{"n":"2.5Y 6/3","h":"2.5Y","v":6,"c":3,"hex":"#a3916f","lab":[61.1,1.4,20.6]},{"n":"2.5Y 6/4","h":"2.5Y","v":6,"c":4,"hex":"#a89163","lab":[61.1,2.0,27.3]},{"n":"2.5Y 6/6","h":"2.5Y","v":6,"c":6,"hex":"#b08f4a","lab":[61.1,3.8,41.1]},{"n":"2.5Y 6/8","h":"2.5Y","v":6,"c":8,"hex":"#b68e2d","lab":[61.1,5.6,54.6]},{"n":"2.5Y 5/1","h":"2.5Y","v":5,"c":1,"hex":"#80796e","lab":[51.0,0.7,6.8]},{"n":"2.5Y 5/2","h":"2.5Y","v":5,"c":2,"hex":"#857862","lab":[51.0,1.3,13.6]},{"n":"2.5Y 5/3","h":"2.5Y","v":5,"c":3,"hex":"#8a7757","lab":[51.0,2.1,20.3]},{"n":"2.5Y 5/4","h":"2.5Y","v":5,"c":4,"hex":"#8e774b","lab":[51.0,2.9,27.3]},{"n":"2.5Y 5/6","h":"2.5Y","v":5,"c":6,"hex":"#957530","lab":[51.0,4.7,41.5]},{"n":"2.5Y 5/8","h":"2.5Y","v":5,"c":8,"hex":"#9a740f","lab":[51.1,6.3,54.2]},{"n":"2.5Y 4/1","h":"2.5Y","v":4,"c":1,"hex":"#665f55","lab":[40.7,0.8,7.0]},{"n":"2.5Y 4/2","h":"2.5Y","v":4,"c":2,"hex":"#6b5f49","lab":[40.8,1.5,14.0]},{"n":"2.5Y 4/3","h":"2.5Y","v":4,"c":3,"hex":"#705e3f","lab":[40.8,2.5,20.6]},{"n":"2.5Y 4/4","h":"2.5Y","v":4,"c":4,"hex":"#735d33","lab":[40.8,3.5,27.5]},{"n":"2.5Y 4/6","h":"2.5Y","v":4,"c":6,"hex":"#795c1b","lab":[40.8,5.2,40.0]},{"n":"2.5Y 4/8","h":"2.5Y","v":4,"c":8,"hex":"#7d5a00","lab":[40.8,6.7,53.1]},{"n":"2.5Y 3/1","h":"2.5Y","v":3,"c":1,"hex":"#4d473e","lab":[30.4,0.9,6.3]},{"n":"2.5Y 3/2","h":"2.5Y","v":3,"c":2,"hex":"#514634","lab":[30.4,1.7,12.7]},{"n":"2.5Y 3/3","h":"2.5Y","v":3,"c":3,"hex":"#55452a","lab":[30.4,2.7,18.8]},{"n":"2.5Y 3/4","h":"2.5Y","v":3,"c":4,"hex":"#59451f","lab":[30.4,3.7,25.4]},{"n":"2.5Y 3/6","h":"2.5Y","v":3,"c":6,"hex":"#5e4301","lab":[30.4,5.7,39.5]},{"n":"2.5Y 3/8","h":"2.5Y","v":3,"c":8,"hex":"#624200","lab":[30.4,7.5,52.7]},{"n":"2.5Y 2.5/1","h":"2.5Y","v":2.5,"c":1,"hex":"#413b33","lab":[25.3,1.0,6.2]},{"n":"2.5Y 2.5/2","h":"2.5Y","v":2.5,"c":2,"hex":"#453a29","lab":[25.3,1.9,12.5]},{"n":"2.5Y 2.5/3","h":"2.5Y","v":2.5,"c":3,"hex":"#49391f","lab":[25.3,3.1,19.1]},{"n":"2.5Y 2.5/4","h":"2.5Y","v":2.5,"c":4,"hex":"#4d3912","lab":[25.3,4.2,26.7]}]},{"id":"5Y","title":"5Y","cols":[1,2,3,4,6,8],"chips":[{"n":"5Y 8/1","h":"5Y","v":8,"c":1,"hex":"#ccc8b9","lab":[80.5,-1.0,7.9]},{"n":"5Y 8/2","h":"5Y","v":8,"c":2,"hex":"#d0c8ab","lab":[80.6,-1.9,15.7]},{"n":"5Y 8/3","h":"5Y","v":8,"c":3,"hex":"#d3c89e","lab":[80.6,-2.6,22.5]},{"n":"5Y 8/4","h":"5Y","v":8,"c":4,"hex":"#d6c891","lab":[80.6,-3.3,29.4]},{"n":"5Y 8/6","h":"5Y","v":8,"c":6,"hex":"#dcc876","lab":[80.6,-3.5,43.3]},{"n":"5Y 8/8","h":"5Y","v":8,"c":8,"hex":"#e2c759","lab":[80.6,-3.5,57.0]},{"n":"5Y 7/1","h":"5Y","v":7,"c":1,"hex":"#b2ada0","lab":[70.9,-0.8,7.6]},{"n":"5Y 7/2","h":"5Y","v":7,"c":2,"hex":"#b6ad92","lab":[70.9,-1.6,15.1]},{"n":"5Y 7/3","h":"5Y","v":7,"c":3,"hex":"#b9ad85","lab":[70.9,-2.1,22.1]},{"n":"5Y 7/4","h":"5Y","v":7,"c":4,"hex":"#bcad78","lab":[70.9,-2.5,29.2]},{"n":"5Y 7/6","h":"5Y","v":7,"c":6,"hex":"#c2ad5e","lab":[70.9,-2.5,43.0]},{"n":"5Y 7/8","h":"5Y","v":7,"c":8,"hex":"#c7ac41","lab":[70.9,-2.1,56.5]},{"n":"5Y 6/1","h":"5Y","v":6,"c":1,"hex":"#989386","lab":[61.1,-0.7,7.5]},{"n":"5Y 6/2","h":"5Y","v":6,"c":2,"hex":"#9b9379","lab":[61.1,-1.4,14.9]},{"n":"5Y 6/3","h":"5Y","v":6,"c":3,"hex":"#9f936d","lab":[61.1,-1.7,21.7]},{"n":"5Y 6/4","h":"5Y","v":6,"c":4,"hex":"#a29361","lab":[61.1,-1.9,28.7]},{"n":"5Y 6/6","h":"5Y","v":6,"c":6,"hex":"#a89245","lab":[61.1,-1.4,43.3]},{"n":"5Y 6/8","h":"5Y","v":6,"c":8,"hex":"#ad9124","lab":[61.1,-0.9,57.4]},{"n":"5Y 5/1","h":"5Y","v":5,"c":1,"hex":"#7e796d","lab":[51.0,-0.6,7.2]},{"n":"5Y 5/2","h":"5Y","v":5,"c":2,"hex":"#817961","lab":[51.0,-1.1,14.3]},{"n":"5Y 5/3","h":"5Y","v":5,"c":3,"hex":"#857955","lab":[51.0,-1.0,21.4]},{"n":"5Y 5/4","h":"5Y","v":5,"c":4,"hex":"#887948","lab":[51.1,-1.0,28.8]},{"n":"5Y 5/6","h":"5Y","v":5,"c":6,"hex":"#8e782c","lab":[51.1,-0.3,43.5]},{"n":"5Y 5/8","h":"5Y","v":5,"c":8,"hex":"#927702","lab":[51.1,0.4,56.5]},{"n":"5Y 4/1","h":"5Y","v":4,"c":1,"hex":"#646054","lab":[40.8,-0.3,7.2]},{"n":"5Y 4/2","h":"5Y","v":4,"c":2,"hex":"#686049","lab":[40.8,-0.6,14.4]},{"n":"5Y 4/3","h":"5Y","v":4,"c":3,"hex":"#6c5f3d","lab":[40.8,-0.4,21.3]},{"n":"5Y 4/4","h":"5Y","v":4,"c":4,"hex":"#6f5f30","lab":[40.8,-0.2,28.7]},{"n":"5Y 4/6","h":"5Y","v":4,"c":6,"hex":"#735e15","lab":[40.8,0.5,41.9]},{"n":"5Y 4/8","h":"5Y","v":4,"c":8,"hex":"#765e00","lab":[40.8,1.3,55.6]},{"n":"5Y 3/1","h":"5Y","v":3,"c":1,"hex":"#4b473e","lab":[30.4,-0.1,6.5]},{"n":"5Y 3/2","h":"5Y","v":3,"c":2,"hex":"#4f4733","lab":[30.4,-0.3,13.0]},{"n":"5Y 3/3","h":"5Y","v":3,"c":3,"hex":"#524729","lab":[30.4,0.1,19.3]},{"n":"5Y 3/4","h":"5Y","v":3,"c":4,"hex":"#54461e","lab":[30.4,0.4,26.3]},{"n":"5Y 3/6","h":"5Y","v":3,"c":6,"hex":"#594500","lab":[30.4,1.4,41.1]},{"n":"5Y 3/8","h":"5Y","v":3,"c":8,"hex":"#5c4500","lab":[30.4,2.1,55.1]},{"n":"5Y 2.5/1","h":"5Y","v":2.5,"c":1,"hex":"#403c32","lab":[25.3,0.0,6.3]},{"n":"5Y 2.5/2","h":"5Y","v":2.5,"c":2,"hex":"#433b29","lab":[25.3,0.0,12.7]},{"n":"5Y 2.5/3","h":"5Y","v":2.5,"c":3,"hex":"#463b1e","lab":[25.3,0.5,19.8]},{"n":"5Y 2.5/4","h":"5Y","v":2.5,"c":4,"hex":"#493a0f","lab":[25.3,0.9,28.0]}]},{"id":"GLEY_1","title":"GLEY 1","cols":["N","10Y","5GY","10GY","5G"],"gley":true,"chips":[{"n":"N 8/","h":"N","v":8,"c":0,"col":"N","hex":"#c8c8c8","lab":[80.5,0.0,0.0]},{"n":"10Y 8/1","h":"10Y","v":8,"c":1,"col":"10Y","hex":"#cac9b9","lab":[80.5,-2.5,8.2]},{"n":"5GY 8/1","h":"5GY","v":8,"c":1,"col":"5GY","hex":"#c6caba","lab":[80.6,-4.0,7.4]},{"n":"10GY 8/1","h":"10GY","v":8,"c":1,"col":"10GY","hex":"#c0cbbf","lab":[80.6,-5.9,4.9]},{"n":"5G 8/1","h":"5G","v":8,"c":1,"col":"5G","hex":"#bdcbc3","lab":[80.5,-6.4,2.5]},{"n":"N 7/","h":"N","v":7,"c":0,"col":"N","hex":"#adadad","lab":[70.9,0.0,-0.0]},{"n":"10Y 7/1","h":"10Y","v":7,"c":1,"col":"10Y","hex":"#afaea0","lab":[70.9,-2.4,7.7]},{"n":"5GY 7/1","h":"5GY","v":7,"c":1,"col":"5GY","hex":"#acafa1","lab":[70.9,-3.9,6.9]},{"n":"10GY 7/1","h":"10GY","v":7,"c":1,"col":"10GY","hex":"#a6b0a5","lab":[70.9,-5.6,4.5]},{"n":"5G 7/1","h":"5G","v":7,"c":1,"col":"5G","hex":"#a3b1a9","lab":[70.9,-6.1,2.3]},{"n":"N 6/","h":"N","v":6,"c":0,"col":"N","hex":"#939393","lab":[61.0,0.0,-0.0]},{"n":"10Y 6/1","h":"10Y","v":6,"c":1,"col":"10Y","hex":"#959486","lab":[61.1,-2.3,7.5]},{"n":"5GY 6/1","h":"5GY","v":6,"c":1,"col":"5GY","hex":"#919588","lab":[61.1,-3.9,6.6]},{"n":"10GY 6/1","h":"10GY","v":6,"c":1,"col":"10GY","hex":"#8c968c","lab":[61.1,-5.5,4.3]},{"n":"5G 6/1","h":"5G","v":6,"c":1,"col":"5G","hex":"#8a968f","lab":[61.1,-5.9,2.2]},{"n":"N 5/","h":"N","v":5,"c":0,"col":"N","hex":"#797979","lab":[51.0,0.0,0.0]},{"n":"10Y 5/1","h":"10Y","v":5,"c":1,"col":"10Y","hex":"#7b7a6e","lab":[51.0,-2.2,7.0]},{"n":"5GY 5/1","h":"5GY","v":5,"c":1,"col":"5GY","hex":"#777b6f","lab":[51.0,-3.7,5.9]},{"n":"10GY 5/1","h":"10GY","v":5,"c":1,"col":"10GY","hex":"#737c73","lab":[51.0,-5.0,3.9]},{"n":"5G 5/1","h":"5G","v":5,"c":1,"col":"5G","hex":"#717c76","lab":[51.0,-5.4,1.9]},{"n":"N 4/","h":"N","v":4,"c":0,"col":"N","hex":"#606060","lab":[40.7,0.0,0.0]},{"n":"10Y 4/1","h":"10Y","v":4,"c":1,"col":"10Y","hex":"#616155","lab":[40.8,-2.1,7.0]},{"n":"5GY 4/1","h":"5GY","v":4,"c":1,"col":"5GY","hex":"#5e6257","lab":[40.8,-3.6,5.7]},{"n":"10GY 4/1","h":"10GY","v":4,"c":1,"col":"10GY","hex":"#5a625a","lab":[40.8,-4.8,3.7]},{"n":"5G 4/1","h":"5G","v":4,"c":1,"col":"5G","hex":"#58635d","lab":[40.8,-5.2,1.8]},{"n":"N 3/","h":"N","v":3,"c":0,"col":"N","hex":"#474848","lab":[30.4,0.0,0.0]},{"n":"10Y 3/1","h":"10Y","v":3,"c":1,"col":"10Y","hex":"#49483e","lab":[30.4,-1.9,6.3]},{"n":"5GY 3/1","h":"5GY","v":3,"c":1,"col":"5GY","hex":"#464940","lab":[30.4,-3.4,5.1]},{"n":"10GY 3/1","h":"10GY","v":3,"c":1,"col":"10GY","hex":"#424943","lab":[30.4,-4.4,3.1]},{"n":"5G 3/1","h":"5G","v":3,"c":1,"col":"5G","hex":"#414a45","lab":[30.4,-4.7,1.5]},{"n":"N 2.5/","h":"N","v":2.5,"c":0,"col":"N","hex":"#3c3c3c","lab":[25.3,0.0,0.0]},{"n":"10Y 2.5/1","h":"10Y","v":2.5,"c":1,"col":"10Y","hex":"#3d3c33","lab":[25.3,-1.8,5.9]},{"n":"5GY 2.5/1","h":"5GY","v":2.5,"c":1,"col":"5GY","hex":"#3a3d35","lab":[25.3,-3.1,4.6]},{"n":"10GY 2.5/1","h":"10GY","v":2.5,"c":1,"col":"10GY","hex":"#373e38","lab":[25.3,-4.0,2.8]},{"n":"5G 2.5/1","h":"5G","v":2.5,"c":1,"col":"5G","hex":"#363e3a","lab":[25.3,-4.4,1.4]}]},{"id":"GLEY_2","title":"GLEY 2","cols":["10G","5BG","10BG","5B","10B","5PB"],"gley":true,"chips":[{"n":"10G 8/1","h":"10G","v":8,"c":1,"col":"10G","hex":"#bccbc6","lab":[80.5,-6.2,1.1]},{"n":"5BG 8/1","h":"5BG","v":8,"c":1,"col":"5BG","hex":"#bccbc8","lab":[80.5,-5.7,-0.2]},{"n":"10BG 8/1","h":"10BG","v":8,"c":1,"col":"10BG","hex":"#bdcbcb","lab":[80.5,-4.7,-1.7]},{"n":"5B 8/1","h":"5B","v":8,"c":1,"col":"5B","hex":"#bfcacc","lab":[80.5,-3.1,-2.5]},{"n":"10B 8/1","h":"10B","v":8,"c":1,"col":"10B","hex":"#c2c9cd","lab":[80.5,-1.7,-2.8]},{"n":"5PB 8/1","h":"5PB","v":8,"c":1,"col":"5PB","hex":"#c5c8cd","lab":[80.5,-0.2,-2.9]},{"n":"10G 7/1","h":"10G","v":7,"c":1,"col":"10G","hex":"#a2b1ac","lab":[70.9,-5.9,0.9]},{"n":"5BG 7/1","h":"5BG","v":7,"c":1,"col":"5BG","hex":"#a2b1ae","lab":[70.9,-5.5,-0.4]},{"n":"10BG 7/1","h":"10BG","v":7,"c":1,"col":"10BG","hex":"#a3b0b0","lab":[70.9,-4.6,-1.8]},{"n":"5B 7/1","h":"5B","v":7,"c":1,"col":"5B","hex":"#a5afb2","lab":[70.9,-3.1,-2.7]},{"n":"10B 7/1","h":"10B","v":7,"c":1,"col":"10B","hex":"#a7afb3","lab":[70.9,-1.6,-3.1]},{"n":"5PB 7/1","h":"5PB","v":7,"c":1,"col":"5PB","hex":"#aaaeb3","lab":[70.9,-0.1,-3.2]},{"n":"10G 6/1","h":"10G","v":6,"c":1,"col":"10G","hex":"#899692","lab":[61.1,-5.7,0.8]},{"n":"5BG 6/1","h":"5BG","v":6,"c":1,"col":"5BG","hex":"#899694","lab":[61.1,-5.3,-0.6]},{"n":"10BG 6/1","h":"10BG","v":6,"c":1,"col":"10BG","hex":"#899697","lab":[61.1,-4.5,-1.9]},{"n":"5B 6/1","h":"5B","v":6,"c":1,"col":"5B","hex":"#8b9598","lab":[61.0,-3.1,-2.8]},{"n":"10B 6/1","h":"10B","v":6,"c":1,"col":"10B","hex":"#8d9499","lab":[61.0,-1.7,-3.3]},{"n":"5PB 6/1","h":"5PB","v":6,"c":1,"col":"5PB","hex":"#909499","lab":[61.0,-0.0,-3.4]},{"n":"10G 5/1","h":"10G","v":5,"c":1,"col":"10G","hex":"#707c78","lab":[51.0,-5.4,0.7]},{"n":"5BG 5/1","h":"5BG","v":5,"c":1,"col":"5BG","hex":"#6f7c7b","lab":[51.0,-5.0,-0.8]},{"n":"10BG 5/1","h":"10BG","v":5,"c":1,"col":"10BG","hex":"#707c7d","lab":[51.0,-4.2,-2.1]},{"n":"5B 5/1","h":"5B","v":5,"c":1,"col":"5B","hex":"#717b7e","lab":[51.0,-3.1,-3.0]},{"n":"10B 5/1","h":"10B","v":5,"c":1,"col":"10B","hex":"#737b80","lab":[51.0,-1.6,-3.6]},{"n":"5PB 5/1","h":"5PB","v":5,"c":1,"col":"5PB","hex":"#767a80","lab":[51.0,0.1,-3.8]},{"n":"10G 4/1","h":"10G","v":4,"c":1,"col":"10G","hex":"#57635f","lab":[40.8,-5.2,0.6]},{"n":"5BG 4/1","h":"5BG","v":4,"c":1,"col":"5BG","hex":"#576261","lab":[40.7,-4.8,-0.8]},{"n":"10BG 4/1","h":"10BG","v":4,"c":1,"col":"10BG","hex":"#576263","lab":[40.7,-4.1,-2.2]},{"n":"5B 4/1","h":"5B","v":4,"c":1,"col":"5B","hex":"#586265","lab":[40.7,-3.1,-3.2]},{"n":"10B 4/1","h":"10B","v":4,"c":1,"col":"10B","hex":"#5a6166","lab":[40.7,-1.5,-3.9]},{"n":"5PB 4/1","h":"5PB","v":4,"c":1,"col":"5PB","hex":"#5d6067","lab":[40.7,0.3,-4.3]},{"n":"10G 3/1","h":"10G","v":3,"c":1,"col":"10G","hex":"#404a47","lab":[30.4,-4.7,0.5]},{"n":"5BG 3/1","h":"5BG","v":3,"c":1,"col":"5BG","hex":"#3f4a49","lab":[30.4,-4.4,-1.0]},{"n":"10BG 3/1","h":"10BG","v":3,"c":1,"col":"10BG","hex":"#3f4a4b","lab":[30.4,-3.9,-2.4]},{"n":"5B 3/1","h":"5B","v":3,"c":1,"col":"5B","hex":"#3f494d","lab":[30.4,-3.0,-3.6]},{"n":"10B 3/1","h":"10B","v":3,"c":1,"col":"10B","hex":"#41494e","lab":[30.4,-1.5,-4.5]},{"n":"5PB 3/1","h":"5PB","v":3,"c":1,"col":"5PB","hex":"#44484f","lab":[30.4,0.4,-4.9]},{"n":"10G 2.5/1","h":"10G","v":2.5,"c":1,"col":"10G","hex":"#353e3b","lab":[25.3,-4.4,0.4]},{"n":"5BG 2.5/1","h":"5BG","v":2.5,"c":1,"col":"5BG","hex":"#343e3d","lab":[25.3,-4.1,-1.0]},{"n":"10BG 2.5/1","h":"10BG","v":2.5,"c":1,"col":"10BG","hex":"#343e3f","lab":[25.3,-3.6,-2.4]},{"n":"5B 2.5/1","h":"5B","v":2.5,"c":1,"col":"5B","hex":"#343d41","lab":[25.3,-2.8,-3.5]},{"n":"10B 2.5/1","h":"10B","v":2.5,"c":1,"col":"10B","hex":"#363d42","lab":[25.3,-1.4,-4.4]},{"n":"5PB 2.5/1","h":"5PB","v":2.5,"c":1,"col":"5PB","hex":"#393c43","lab":[25.2,0.4,-4.9]}]}];
+const ALL = PAGES.flatMap(p => p.chips.map(c => ({...c, page: p.id})));
+const HUE_ORDER = ['10R','2.5YR','5YR','7.5YR','10YR','2.5Y','5Y'];
+const $ = id => document.getElementById(id);
+let cur = PAGES.find(p => p.id === '10YR');
+let sel = null;
+
+function textOn(c){ return c.lab[0] < 52 ? '#f4f4f4' : '#1b1b1b'; }
+function rgbOf(hex){ return [1,3,5].map(i => parseInt(hex.slice(i,i+2),16)); }
+function vFmt(v){ return String(v); }
+function short(c){ return c.c === 0 ? `${vFmt(c.v)}/` : `${vFmt(c.v)}/${c.c}`; }
+function pageLabel(p){ return p.title; }
+
+/* tabs */
+const tabs = $('tabs');
+PAGES.forEach(p => {
+  const b = document.createElement('button');
+  b.className = 'tab'; b.type = 'button'; b.setAttribute('role','tab'); b.id = 'tab-' + p.id; b.dataset.id = p.id;
+  const mid = p.chips.find(c => c.v === 5 && (c.c === 4 || (p.gley && c.c === 1))) || p.chips[0];
+  b.innerHTML = `<span class="dot" style="background:${mid.hex}"></span>${pageLabel(p)}`;
+  b.addEventListener('click', () => { showPage(p.id); });
+  tabs.appendChild(b);
+});
+
+function showPage(id, keepSel){
+  cur = PAGES.find(p => p.id === id) || cur;
+  document.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t.dataset.id === cur.id ? 'true' : 'false'));
+  $('plateHue').textContent = cur.gley ? cur.title.toUpperCase() : cur.title;
+  $('plateNote').textContent = cur.gley ? 'Value ↓ · Hue (chroma 1) →' : 'Value ↓ · Chroma →';
+  const g = $('grid');
+  const cols = cur.cols;
+  g.style.gridTemplateColumns = `34px repeat(${cols.length}, minmax(34px, 84px))`;
+  g.innerHTML = '';
+  const values = [8,7,6,5,4,3,2.5];
+  values.forEach(v => {
+    const lab = document.createElement('div'); lab.className = 'axis row'; lab.textContent = v + '/'; g.appendChild(lab);
+    cols.forEach(col => {
+      const chip = cur.chips.find(c => c.v === v && (cur.gley ? c.col === col : c.c === col));
+      if (!chip){ const h = document.createElement('div'); h.className = 'hole'; h.title = 'ไม่มีชิปนี้ (นอกขอบเขตสี)'; g.appendChild(h); return; }
+      const b = document.createElement('button');
+      b.className = 'chip'; b.type = 'button';
+      b.style.background = chip.hex; b.style.color = textOn(chip);
+      b.dataset.n = chip.n;
+      b.setAttribute('aria-label', chip.n);
+      b.innerHTML = `<span>${cur.gley ? chip.h : ''}${cur.gley ? ' ' : ''}${short(chip)}</span>`;
+      b.addEventListener('click', () => select(chip.n));
+      g.appendChild(b);
+    });
+  });
+  const blank = document.createElement('div'); g.appendChild(blank);
+  cols.forEach(col => { const a = document.createElement('div'); a.className = 'axis'; a.textContent = cur.gley ? col : '/' + col; g.appendChild(a); });
+  const t = document.createElement('div'); t.className = 'axis-title'; t.style.gridColumn = `2 / span ${cols.length}`; t.style.textAlign = 'center';
+  t.textContent = cur.gley ? 'Hue' : 'Chroma'; g.appendChild(blank.cloneNode()); g.appendChild(t);
+  $('plateCount').textContent = `${cur.chips.length} ชิป`;
+  try { history.replaceState(null, '', '#' + cur.id); } catch(e) {}
+  try { localStorage.setItem('msc-page', cur.id); } catch(e) {}
+  if (!keepSel){
+    const keep = sel && cur.chips.find(c => c.v === sel.v && c.c === sel.c && !cur.gley);
+    select((keep || cur.chips.find(c => c.v === 4 && (c.c === 3 || cur.gley)) || cur.chips[0]).n, true);
+  } else markSel();
+}
+
+function markSel(){
+  document.querySelectorAll('.chip').forEach(el => el.classList.toggle('sel', sel && el.dataset.n === sel.n));
+}
+
+function select(n, quiet){
+  const c = ALL.find(x => x.n === n); if (!c) return;
+  if (c.page !== cur.id){ sel = c; showPage(c.page, true); }
+  sel = c; markSel();
+  $('swatch').style.background = c.hex;
+  $('dNot').textContent = c.n;
+  const p = PAGES.find(p => p.id === c.page);
+  $('dDesc').textContent = `หน้า ${p.title}` + (c.c === 0 ? ' · สีกลาง (neutral)' : '');
+  $('pH').textContent = c.h; $('pV').textContent = c.v; $('pC').textContent = c.c === 0 ? '0' : c.c;
+  $('kN').textContent = c.n; $('kHex').textContent = c.hex.toUpperCase();
+  $('kRgb').textContent = rgbOf(c.hex).join(', ');
+  $('kLab').textContent = c.lab.map(x => x.toFixed(1)).join(', ');
+  renderNeigh(c);
+}
+
+function renderNeigh(c){
+  const box = $('neigh'); box.innerHTML = '';
+  let list;
+  if (!PAGES.find(p => p.id === c.page).gley){
+    const i = HUE_ORDER.indexOf(c.h);
+    list = [-2,-1,0,1,2].map(d => HUE_ORDER[i+d]).map(h => h ? ALL.find(x => x.h === h && x.v === c.v && x.c === c.c) || {miss:h} : null);
+  } else {
+    const p = PAGES.find(p => p.id === c.page);
+    list = p.cols.map(h => p.chips.find(x => x.col === h && x.v === c.v)).slice(0,5);
+    while (list.length < 5) list.push(null);
+  }
+  list.forEach(x => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'mini';
+    if (!x || x.miss){ b.classList.add('none'); b.disabled = true; b.textContent = x ? x.miss : ''; b.style.color = 'var(--muted)'; }
+    else {
+      b.style.background = x.hex; b.style.color = textOn(x); b.textContent = x.h;
+      b.title = x.n; b.setAttribute('aria-label', x.n);
+      if (x.n === c.n) b.classList.add('cur');
+      b.addEventListener('click', () => select(x.n));
+    }
+    box.appendChild(b);
+  });
+}
+
+/* copy */
+document.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', () => {
+  const el = $(b.dataset.copy); const txt = el.textContent;
+  const done = () => { const o = b.textContent; b.textContent = 'คัดลอกแล้ว'; setTimeout(() => b.textContent = o, 1200); };
+  try {
+    navigator.clipboard.writeText(txt).then(done, () => { selectText(el); });
+  } catch(e){ selectText(el); }
+}));
+function selectText(el){ const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); $('msg').textContent = 'เลือกข้อความไว้แล้ว กด Ctrl/⌘+C เพื่อคัดลอก'; }
+
+/* labels toggle */
+$('showLabels').addEventListener('change', e => {
+  $('plate').classList.toggle('labels', e.target.checked);
+  try { localStorage.setItem('msc-labels', e.target.checked ? '1' : '0'); } catch(err) {}
+});
+
+/* search */
+function normalize(q){
+  q = q.trim().toUpperCase().replace(/\s+/g,' ');
+  let m = q.match(/^(GLEY\s*[12]\s*)?([0-9.]*\s*[A-Z]+)\s*([0-9.]+)\s*\/\s*([0-9.]*)$/);
+  if (!m) return null;
+  let hue = m[2].replace(/\s/g,''); const v = parseFloat(m[3]); const c = m[4] === '' ? 0 : parseFloat(m[4]);
+  if (hue === 'N') return ALL.find(x => x.h === 'N' && x.v === v);
+  return ALL.find(x => x.h === hue && x.v === v && x.c === c);
+}
+$('searchForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const q = $('q').value; if (!q.trim()) return;
+  const hit = normalize(q);
+  if (hit){ select(hit.n); $('msg').textContent = `พบ ${hit.n} ในหน้า ${hit.page.replace('_',' ')}`; }
+  else $('msg').textContent = `ไม่พบ “${q}” ลองพิมพ์รูปแบบ Hue Value/Chroma เช่น 7.5YR 5/6 หรือ N 4/`;
+});
+
+/* colour matching — sRGB → Lab(D65), ΔE2000 */
+function hexToLab(hex){
+  const [r,g,b] = rgbOf(hex).map(v => { v/=255; return v <= 0.04045 ? v/12.92 : Math.pow((v+0.055)/1.055, 2.4); });
+  let X = r*0.4124564 + g*0.3575761 + b*0.1804375;
+  let Y = r*0.2126729 + g*0.7151522 + b*0.0721750;
+  let Z = r*0.0193339 + g*0.1191920 + b*0.9503041;
+  X/=0.95047; Z/=1.08883;
+  const f = t => t > 216/24389 ? Math.cbrt(t) : (24389/27*t + 16)/116;
+  const fx=f(X), fy=f(Y), fz=f(Z);
+  return [116*fy-16, 500*(fx-fy), 200*(fy-fz)];
+}
+function dE00(a,b){
+  const [L1,a1,b1]=a,[L2,a2,b2]=b, rad=Math.PI/180;
+  const C1=Math.hypot(a1,b1), C2=Math.hypot(a2,b2), Cb=(C1+C2)/2;
+  const G=0.5*(1-Math.sqrt(Math.pow(Cb,7)/(Math.pow(Cb,7)+Math.pow(25,7))));
+  const a1p=(1+G)*a1, a2p=(1+G)*a2, C1p=Math.hypot(a1p,b1), C2p=Math.hypot(a2p,b2);
+  const h=(x,y)=>{ if(x===0&&y===0) return 0; let t=Math.atan2(y,x)/rad; return t<0?t+360:t; };
+  const h1p=h(a1p,b1), h2p=h(a2p,b2);
+  const dL=L2-L1, dC=C2p-C1p;
+  let dh=0; if(C1p*C2p!==0){ dh=h2p-h1p; if(dh>180) dh-=360; else if(dh<-180) dh+=360; }
+  const dH=2*Math.sqrt(C1p*C2p)*Math.sin(dh*rad/2);
+  const Lb=(L1+L2)/2, Cbp=(C1p+C2p)/2;
+  let hb=h1p+h2p; if(C1p*C2p!==0){ hb = Math.abs(h1p-h2p)>180 ? (h1p+h2p+(h1p+h2p<360?360:-360))/2 : (h1p+h2p)/2; }
+  const T=1-0.17*Math.cos((hb-30)*rad)+0.24*Math.cos(2*hb*rad)+0.32*Math.cos((3*hb+6)*rad)-0.20*Math.cos((4*hb-63)*rad);
+  const Sl=1+0.015*Math.pow(Lb-50,2)/Math.sqrt(20+Math.pow(Lb-50,2)), Sc=1+0.045*Cbp, Sh=1+0.015*Cbp*T;
+  const Rt=-2*Math.sqrt(Math.pow(Cbp,7)/(Math.pow(Cbp,7)+Math.pow(25,7)))*Math.sin(60*Math.exp(-Math.pow((hb-275)/25,2))*rad);
+  return Math.sqrt((dL/Sl)**2+(dC/Sc)**2+(dH/Sh)**2+Rt*(dC/Sc)*(dH/Sh));
+}
+function match(hex){
+  const lab = hexToLab(hex);
+  const ranked = ALL.map(c => ({c, d: dE00(lab, c.lab)})).sort((a,b) => a.d - b.d).slice(0,4);
+  const box = $('results'); box.innerHTML = '';
+  const head = document.createElement('div'); head.className = 'muted'; head.style.fontSize = '13px';
+  head.innerHTML = `สีที่เลือก <b style="font-family:var(--f-mono);color:var(--ink)">${hex.toUpperCase()}</b> · ชิปที่ใกล้ที่สุด`;
+  box.appendChild(head);
+  ranked.forEach(({c,d}) => {
+    const r = document.createElement('button'); r.type = 'button'; r.className = 'res';
+    r.innerHTML = `<i style="background:${hex}"></i><i style="background:${c.hex}"></i><span><b>${c.n}</b><br><small>${c.page.replace('_',' ')}</small></span><small>ΔE ${d.toFixed(1)}</small>`;
+    r.addEventListener('click', () => { select(c.n); $('plate').scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block:'start'}); });
+    box.appendChild(r);
+  });
+  const note = document.createElement('div'); note.className = 'fine';
+  note.textContent = 'ΔE < 2 แทบแยกไม่ออก · 2–5 ต่างกันเล็กน้อย · > 5 เห็นความต่างชัด';
+  box.appendChild(note);
+}
+$('picker').addEventListener('input', e => { $('hexIn').value = e.target.value; match(e.target.value); });
+$('hexIn').addEventListener('change', e => {
+  let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v;
+  if (/^#[0-9a-fA-F]{6}$/.test(v)){ $('picker').value = v.toLowerCase(); match(v.toLowerCase()); $('msg').textContent = ''; }
+  else $('msg').textContent = 'ค่า HEX ต้องเป็นตัวเลขฐานสิบหก 6 หลัก เช่น #6B5440';
+});
+$('file').addEventListener('change', e => {
+  const f = e.target.files && e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 900, s = Math.min(1, max / Math.max(img.width, img.height));
+      const cv = document.createElement('canvas'); cv.width = Math.round(img.width*s); cv.height = Math.round(img.height*s);
+      const ctx = cv.getContext('2d', {willReadFrequently:true}); ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      const ph = $('photo'); ph.innerHTML = ''; ph.appendChild(cv);
+      const hint = document.createElement('div'); hint.className = 'fine'; hint.style.marginTop = '6px'; hint.textContent = 'แตะบนรูปเพื่อเก็บสี'; ph.appendChild(hint);
+      cv.addEventListener('click', ev => {
+        const r = cv.getBoundingClientRect();
+        const x = Math.round((ev.clientX - r.left) * cv.width / r.width), y = Math.round((ev.clientY - r.top) * cv.height / r.height);
+        const k = 4, x0 = Math.max(0, x-k), y0 = Math.max(0, y-k);
+        const d = ctx.getImageData(x0, y0, Math.min(cv.width - x0, 2*k+1), Math.min(cv.height - y0, 2*k+1)).data;
+        let R=0,G=0,B=0,n=0; for (let i=0;i<d.length;i+=4){ R+=d[i]; G+=d[i+1]; B+=d[i+2]; n++; }
+        const hex = '#' + [R,G,B].map(v => Math.round(v/n).toString(16).padStart(2,'0')).join('');
+        $('picker').value = hex; $('hexIn').value = hex; match(hex);
+      });
+    };
+    img.src = rd.result;
+  };
+  rd.readAsDataURL(f);
+});
+
+/* boot */
+let start = '10YR';
+const h = (location.hash || '').slice(1);
+if (PAGES.find(p => p.id === h)) start = h;
+else { try { const s = localStorage.getItem('msc-page'); if (s && PAGES.find(p => p.id === s)) start = s; } catch(e) {} }
+try { if (localStorage.getItem('msc-labels') === '1'){ $('showLabels').checked = true; $('plate').classList.add('labels'); } } catch(e) {}
+showPage(start);
+match('#6b5440');
+</script>
+
+</body>
+</html>
