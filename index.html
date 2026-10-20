@@ -84,7 +84,7 @@ section.sec{display:grid;gap:18px;min-width:0}
 .sec-no{font-family:var(--f-mono);font-size:13px;color:var(--soil);letter-spacing:.06em}
 .prose{display:grid;gap:12px;max-width:72ch}
 .prose ul,.prose ol{margin:0;padding-left:22px;display:grid;gap:4px}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px;min-width:0}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:18px;display:grid;gap:12px;min-width:0;align-content:start}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 @media (max-width:760px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
@@ -104,7 +104,8 @@ tr:last-child td{border-bottom:0}
 ol.steps{list-style:none;margin:0;padding:0;display:grid;gap:14px;counter-reset:s}
 ol.steps>li{counter-increment:s;display:grid;grid-template-columns:38px minmax(0,1fr);gap:12px}
 ol.steps>li::before{content:counter(s);font-family:var(--f-mono);font-weight:500;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--forest);color:var(--forest);display:grid;place-items:center;font-size:14px;margin-top:2px}
-ol.steps>li>div{display:grid;gap:6px;min-width:0}
+ol.steps>li>div{display:block;min-width:0}
+ol.steps>li>div>*+*{margin-top:6px}
 ol.steps ul{margin:0;padding-left:20px}
 /* formula */
 .f{font-family:var(--f-mono);font-size:14px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:10px 12px;overflow-x:auto;white-space:pre;line-height:1.6}
@@ -172,6 +173,15 @@ textarea{font-family:var(--f-mono);font-size:13px;min-height:190px;resize:vertic
 footer{border-top:1px solid var(--line);background:var(--paper)}
 footer .in{max-width:1240px;margin:0 auto;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:10px;font-size:14px;color:var(--muted)}
 footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:var(--ink)}
+.vid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
+@media (max-width:760px){.vid{grid-template-columns:minmax(0,1fr)}}
+.yt{position:relative;aspect-ratio:16/9;max-width:100%;border-radius:8px;overflow:hidden;background:#111;border:1px solid var(--line)}
+.yt button{all:unset;cursor:pointer;position:absolute;inset:0;display:grid;place-items:center}
+.yt img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border:0;border-radius:0}
+.yt .play{position:relative;width:72px;height:50px;border-radius:12px;background:rgba(200,30,30,.92);display:grid;place-items:center}
+.yt .play::after{content:"";border-style:solid;border-width:11px 0 11px 19px;border-color:transparent transparent transparent #fff;margin-left:4px}
+.yt button:focus-visible{outline:3px solid var(--soil);outline-offset:-3px}
+.yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .munsell-strip{display:flex;height:10px;border-radius:2px;overflow:hidden}
 .munsell-strip i{flex:1}
 </style>
@@ -358,6 +368,7 @@ footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:va
         <div class="munsell-strip" aria-hidden="true"><i style="background:#433a33"></i><i style="background:#5a4b3c"></i><i style="background:#735c41"></i><i style="background:#8d765a"></i><i style="background:#a2701b"></i><i style="background:#c49d6e"></i><i style="background:#dcc7a5"></i></div>
         <h3>Munsell Soil Color Charts</h3>
         <p>ระบุสีดินเป็น <span class="mono">Hue Value/Chroma</span> เช่น <span class="mono">10YR 4/3</span> บันทึกทั้งสภาพชื้นและแห้ง เทียบกลางแสงธรรมชาติ ชาร์ตออนไลน์มี 9 หน้า (10R–5Y, Gley 1–2) และเทียบสีจากรูปถ่ายได้</p>
+        <p class="note warn small">หมายเหตุ: การตรวจสอบนี้ เป็นไปเพื่อการฝึกเท่านั้น เนื่องจากสีบนจอคำนวณจากข้อมูล Munsell Renotation (1943) ภายใต้แหล่งแสง C แปลงเป็น sRGB ด้วย Bradford adaptation ค่า Value 2.5 ได้จากการประมาณค่าระหว่างแถว ชิปที่อยู่นอกขอบเขตสี sRGB ถูกเว้นว่างไว้ สีที่เห็นขึ้นกับจอและการตั้งค่าความสว่าง ชิปในหน้านี้จึงใช้ศึกษาและอ้างอิงได้ แต่<b>ใช้แทนชาร์ตกระดาษจริงในการบรรยายดินอย่างเป็นทางการไม่ได้</b> รูปถ่ายจากกล้องมือถือมี white balance ที่คลาดเคลื่อน ผลการเทียบจากรูปจึงเป็นค่าประมาณเท่านั้น</p>
         <div class="row"><a class="btn" href="munsell.html">เปิดชาร์ตสีดิน</a></div>
       </div>
       <div class="card">
@@ -640,6 +651,16 @@ D = GBH ÷ (22/7)</div>
     <div class="lib" id="libMain"></div>
     <h3>หนังสือชุดความหลากหลายทางชีวภาพ บริเวณเขาถ้ำเสือ-เขาจำปา</h3>
     <div class="lib" id="libBooks"></div>
+    <h3>วิดีโอประกอบ</h3>
+    <div class="vid">
+      <div class="yt" id="yt1" data-id="_tbZ88qiVA8"><button type="button" aria-label="เล่นวิดีโอประกอบปฏิบัติการภาคสนาม"><img src="https://i.ytimg.com/vi/_tbZ88qiVA8/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="play"></span></button></div>
+      <div class="card">
+        <span class="tag">YouTube</span>
+        <h4>วิดีโอประกอบปฏิบัติการภาคสนาม</h4>
+        <p class="small muted">ดูก่อนออกภาคสนาม แตะภาพเพื่อเล่นในหน้านี้ หรือเปิดใน YouTube</p>
+        <div class="row"><a class="btn ghost" href="https://youtu.be/_tbZ88qiVA8" target="_blank" rel="noopener">เปิดใน YouTube</a></div>
+      </div>
+    </div>
     <h3>แหล่งข้อมูลภายนอก</h3>
     <div class="links">
       <a href="http://ghgreduction.tgo.or.th/less" target="_blank" rel="noopener"><b>โครงการ LESS · อบก.</b><small>ไฟล์คำนวณ แบบฟอร์มใบสมัคร และประกาศผล</small></a>
@@ -873,6 +894,10 @@ const BOOKS=[
  ['book-bats.pdf','ค้างคาว','ธงชัย งามประเสริฐวงศ์ และคณะ','5.7 MB','cover-bats.jpg']];
 function lib(id,arr){$(id).innerHTML=arr.map(([f,t,by,sz,cov,txt])=>`<a class="doc" href="docs/${f}" target="_blank" rel="noopener"><div class="cov${cov?'':' txt'}">${cov?`<img src="assets/${cov}" alt="" loading="lazy">`:esc(txt)}</div><div class="meta"><h4>${esc(t)}</h4><span class="by">${esc(by)}</span><span class="dl">${f.endsWith('.xlsx')?'XLSX':'PDF'} · ${sz}</span></div></a>`).join('')}
 lib('libMain',MAIN);lib('libBooks',BOOKS);
+
+/* ---------- video (load player on tap) ---------- */
+document.querySelectorAll('.yt').forEach(box=>{const b=box.querySelector('button');b.addEventListener('click',()=>{const f=document.createElement('iframe');
+  f.src='https://www.youtube-nocookie.com/embed/'+box.dataset.id+'?autoplay=1&rel=0';f.title='วิดีโอประกอบปฏิบัติการภาคสนาม';f.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';f.allowFullscreen=true;box.replaceChildren(f)})});
 
 /* ---------- toc highlight ---------- */
 const links=[...document.querySelectorAll('#tocList a')];const secs=links.map(a=>document.querySelector(a.getAttribute('href')));
