@@ -199,11 +199,12 @@ footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:va
 .yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .munsell-strip{display:flex;height:10px;border-radius:2px;overflow:hidden}
 .munsell-strip i{flex:1}
+.visit-btn{font:500 13px var(--f-body,system-ui);border:1px solid currentColor;background:transparent;color:inherit;border-radius:999px;padding:2px 12px;cursor:pointer}
 </style>
 </head>
 <body>
 
-<div class="support"><div class="in"><span><b>สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</b></span><span>รายวิชา 2303222 ปฏิบัติการนิเวศวิทยา · ภาควิชาชีววิทยา คณะวิทยาศาสตร์</span></div></div>
+<div class="support"><div class="in"><span><b>สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</b></span><span>รายวิชา 2303222 ปฏิบัติการนิเวศวิทยา · ภาควิชาชีววิทยา คณะวิทยาศาสตร์ <button class="visit-btn" type="button" hidden><span class="visit-out">จำนวนผู้เข้าชม</span></button></span></div></div>
 
 <header class="hero">
   <div class="in">
@@ -769,6 +770,7 @@ D = GBH ÷ (22/7)</div>
     <p class="sup">สนับสนุนโดยศูนย์พันธกิจเพื่อสังคม จุฬาลงกรณ์มหาวิทยาลัย</p>
     <p>เนื้อหาเรียบเรียงจากเอกสารประกอบการศึกษาภาคสนาม วิชาปฏิบัติการนิเวศวิทยา (2569) โดยคณาจารย์ผู้สอน ภาควิชาชีววิทยา คณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย ร่วมกับคู่มือของโครงการอนุรักษ์พันธุกรรมพืชอันเนื่องมาจากพระราชดำริฯ สนองพระราชดำริโดยจุฬาลงกรณ์มหาวิทยาลัย (อพ.สธ.-จฬ.) และเอกสารโครงการ LESS ของ อบก.</p>
     <p>หนังสือและคู่มือในคลังเอกสารเป็นลิขสิทธิ์ของเจ้าของผลงาน เผยแพร่เพื่อการศึกษา</p>
+    <p><button class="visit-btn" type="button" hidden><span class="visit-out">จำนวนผู้เข้าชม</span></button></p>
   </div>
 </footer>
 
@@ -968,6 +970,17 @@ let last='';function act(){const y=innerHeight*0.25;let cur=secs[0];for(const s 
   if(!cur||cur.id===last)return;last=cur.id;links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur.id));
   const on=links.find(a=>a.classList.contains('on')),ol=$('tocList');if(on&&ol.scrollWidth>ol.clientWidth)ol.scrollLeft=on.parentElement.offsetLeft-ol.clientWidth/2+on.offsetWidth/2}
 addEventListener('scroll',act,{passive:true});addEventListener('resize',act);act();
+})();
+</script>
+<script>
+/* ตัวนับผู้เข้าชม GoatCounter: ใส่รหัสเว็บ (code) ที่สมัครไว้ใน GC */
+(function(){var GC='tenrm-cu';if(!GC)return;
+var s=document.createElement('script');s.async=true;s.src='https://gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://'+GC+'.goatcounter.com/count');document.head.appendChild(s);
+document.querySelectorAll('.visit-btn').forEach(function(b){b.hidden=false;b.addEventListener('click',function(){
+  var out=b.querySelector('.visit-out');out.textContent='กำลังนับ…';
+  fetch('https://'+GC+'.goatcounter.com/counter/TOTAL.json').then(function(r){if(!r.ok)throw r.status;return r.json()})
+   .then(function(j){out.textContent='ผู้เข้าชมทั้งหมด '+(j.count_unique||j.count)+' คน'})
+   .catch(function(){out.textContent='ดูจำนวนไม่ได้ในขณะนี้'})})});
 })();
 </script>
 </body>

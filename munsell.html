@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>body{margin:0}[hidden]{display:none!important}</style>
+<style>body{margin:0}[hidden]{display:none!important}.visit-btn{font:500 13px var(--f-body,system-ui);border:1px solid currentColor;background:transparent;color:inherit;border-radius:999px;padding:2px 12px;cursor:pointer}
+</style>
 <title>Munsell Soil Color Charts · EcoLab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -451,5 +452,16 @@ showPage(start);
 match('#6b5440');
 </script>
 
+<script>
+/* ตัวนับผู้เข้าชม GoatCounter: ใส่รหัสเว็บ (code) ที่สมัครไว้ใน GC */
+(function(){var GC='tenrm-cu';if(!GC)return;
+var s=document.createElement('script');s.async=true;s.src='https://gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://'+GC+'.goatcounter.com/count');document.head.appendChild(s);
+document.querySelectorAll('.visit-btn').forEach(function(b){b.hidden=false;b.addEventListener('click',function(){
+  var out=b.querySelector('.visit-out');out.textContent='กำลังนับ…';
+  fetch('https://'+GC+'.goatcounter.com/counter/TOTAL.json').then(function(r){if(!r.ok)throw r.status;return r.json()})
+   .then(function(j){out.textContent='ผู้เข้าชมทั้งหมด '+(j.count_unique||j.count)+' คน'})
+   .catch(function(){out.textContent='ดูจำนวนไม่ได้ในขณะนี้'})})});
+})();
+</script>
 </body>
 </html>

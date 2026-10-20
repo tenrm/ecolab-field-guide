@@ -123,6 +123,7 @@ footer b{color:var(--ink);font-family:var(--f-display);font-size:16px}
   #printArea td{height:7.2mm}
   #printArea .sup{font-size:9pt;margin-top:4px}
 }
+.visit-btn{font:500 13px var(--f-body,system-ui);border:1px solid currentColor;background:transparent;color:inherit;border-radius:999px;padding:2px 12px;cursor:pointer}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
 </head>
@@ -345,6 +346,17 @@ $('printBlank').addEventListener('click',()=>{
 window.addEventListener('afterprint',()=>document.body.classList.remove('print-blank'));
 
 build();
+})();
+</script>
+<script>
+/* ตัวนับผู้เข้าชม GoatCounter: ใส่รหัสเว็บ (code) ที่สมัครไว้ใน GC */
+(function(){var GC='tenrm-cu';if(!GC)return;
+var s=document.createElement('script');s.async=true;s.src='https://gc.zgo.at/count.js';s.setAttribute('data-goatcounter','https://'+GC+'.goatcounter.com/count');document.head.appendChild(s);
+document.querySelectorAll('.visit-btn').forEach(function(b){b.hidden=false;b.addEventListener('click',function(){
+  var out=b.querySelector('.visit-out');out.textContent='กำลังนับ…';
+  fetch('https://'+GC+'.goatcounter.com/counter/TOTAL.json').then(function(r){if(!r.ok)throw r.status;return r.json()})
+   .then(function(j){out.textContent='ผู้เข้าชมทั้งหมด '+(j.count_unique||j.count)+' คน'})
+   .catch(function(){out.textContent='ดูจำนวนไม่ได้ในขณะนี้'})})});
 })();
 </script>
 </body>
