@@ -173,6 +173,20 @@ textarea{font-family:var(--f-mono);font-size:13px;min-height:190px;resize:vertic
 footer{border-top:1px solid var(--line);background:var(--paper)}
 footer .in{max-width:1240px;margin:0 auto;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:10px;font-size:14px;color:var(--muted)}
 footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:var(--ink)}
+.deck{display:grid;gap:12px}
+.stage{position:relative;aspect-ratio:16/9;max-width:100%;background:#0f1411;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border:0;border-radius:0;background:#fff}
+.stage .nav{position:absolute;top:0;bottom:0;width:18%;border:0;background:transparent;cursor:pointer;color:transparent}
+.stage .nav.prev{left:0}.stage .nav.next{right:0}
+.stage .nav:hover,.stage .nav:focus-visible{background:linear-gradient(90deg,rgba(0,0,0,.18),transparent)}
+.stage .nav.next:hover,.stage .nav.next:focus-visible{background:linear-gradient(270deg,rgba(0,0,0,.18),transparent)}
+.deckbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.deckbar .cap{font-size:14.5px;min-width:0;flex:1 1 220px}
+.deckbar .cap b{font-family:var(--f-mono);color:var(--soil);font-weight:500;margin-right:6px}
+.thumbs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.thumbs button{flex:none;width:104px;aspect-ratio:16/9;padding:0;border:2px solid transparent;border-radius:4px;background:var(--paper);cursor:pointer;overflow:hidden}
+.thumbs button img{width:100%;height:100%;object-fit:cover;border:0;border-radius:0}
+.thumbs button[aria-current="true"]{border-color:var(--soil)}
 .vid+.vid{margin-top:18px}
 .vid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:18px;align-items:start}
 @media (max-width:760px){.vid{grid-template-columns:minmax(0,1fr)}}
@@ -213,6 +227,7 @@ footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:va
   <nav class="toc" aria-label="สารบัญ">
     <p class="toc-title">สารบัญ</p>
     <ol id="tocList">
+      <li><a href="#briefing"><span class="n">00</span>สไลด์แนะนำ</a></li>
       <li><a href="#overview"><span class="n">01</span>ภาพรวม</a></li>
       <li><a href="#site"><span class="n">02</span>พื้นที่ศึกษา</a></li>
       <li><a href="#prep"><span class="n">03</span>อุปกรณ์</a></li>
@@ -229,6 +244,29 @@ footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:va
   </nav>
 
   <main>
+  <!-- 00 -->
+  <section class="sec" id="briefing">
+    <div class="sec-head"><span class="sec-no">00 · BRIEFING</span><h2>สไลด์แนะนำปฏิบัติการ</h2></div>
+    <p class="prose">สไลด์การเตรียมการปฏิบัติงานในภาคสนาม วันที่ 23–24 ตุลาคม 2569: กำหนดการ ที่พัก การเดินทาง ความปลอดภัย เส้นทางศึกษาธรรมชาติ แปลงถาวร และงานที่ต้องส่ง</p>
+    <div class="deck" id="deck">
+      <div class="stage">
+        <img id="deckImg" src="slides00/s-01.jpg" alt="สไลด์ที่ 1 การปฏิบัติงานในภาคสนาม วิชา 2303222">
+        <button class="nav prev" type="button" id="deckPrev" aria-label="สไลด์ก่อนหน้า">ก่อนหน้า</button>
+        <button class="nav next" type="button" id="deckNext" aria-label="สไลด์ถัดไป">ถัดไป</button>
+      </div>
+      <div class="deckbar">
+        <p class="cap" aria-live="polite"><b id="deckNo">1 / 39</b><span id="deckTitle">การปฏิบัติงานในภาคสนาม วิชา 2303222</span></p>
+        <div class="row">
+          <button class="btn ghost" type="button" id="deckPrev2">← ก่อนหน้า</button>
+          <button class="btn ghost" type="button" id="deckNext2">ถัดไป →</button>
+          <button class="btn ghost" type="button" id="deckFull">เต็มจอ</button>
+          <a class="btn" href="docs/ecolab-fieldtrip-briefing-2569.pdf" target="_blank" rel="noopener">ดาวน์โหลด PDF · 9.6 MB</a>
+        </div>
+      </div>
+      <div class="thumbs" id="deckThumbs" role="tablist" aria-label="เลือกสไลด์"></div>
+    </div>
+  </section>
+
   <!-- 01 -->
   <section class="sec" id="overview">
     <div class="sec-head"><span class="sec-no">01 · OVERVIEW</span><h2>ภาพรวมของปฏิบัติการ</h2></div>
@@ -237,7 +275,7 @@ footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:va
     </div>
     <div class="grid3">
       <div class="card"><span class="tag">ส่วนที่ 1</span><h3>สังคมพืชในแปลงถาวร</h3><p class="small muted">Quadrat sampling ต้นไม้และไม้หนุ่ม/ไม้พุ่ม ปัจจัยกายภาพ เศษซาก และสัตว์ในดิน แล้ววิเคราะห์ค่าดัชนีความสำคัญ ความหลากหลาย และคาร์บอนเหนือพื้นดิน</p></div>
-      <div class="card"><span class="tag">ส่วนที่ 2</span><h3>เส้นทางศึกษาธรรมชาติ</h3><p class="small muted">สำรวจแบบ belt transect 2 เส้นทาง บันทึกโครงสร้างและหน้าที่ของระบบนิเวศด้วย iNaturalist เพื่อเตรียมข้อมูลพัฒนาเป็นพื้นที่ OECMs</p></div>
+      <div class="card"><span class="tag">ส่วนที่ 2</span><h3>เส้นทางศึกษาธรรมชาติ</h3><p class="small muted">สำรวจแบบ belt transect 3 เส้นทาง บันทึกโครงสร้างและหน้าที่ของระบบนิเวศด้วย iNaturalist เพื่อเตรียมข้อมูลพัฒนาเป็นพื้นที่ OECMs</p></div>
       <div class="card"><span class="tag">ส่วนที่ 3</span><h3>นำเสนอและรายงาน</h3><p class="small muted">นำเสนอหน้าชั้นเรียน ส่งวิดีโอ ภาพถ่าย และรายงานฉบับสมบูรณ์ทาง MCV</p></div>
     </div>
     <div class="card">
@@ -509,10 +547,11 @@ DBH class: &lt;10, &gt;10–15, &gt;15–20, &gt;20–25,
       <div class="prose">
         <p>พื้นที่นี้ถูกรบกวนทั้งจากธรรมชาติ (natural disturbance) และมนุษย์ (anthropogenic disturbance) พิจารณาการรบกวนจาก 4 ปัจจัย คือ <b>ความรุนแรง</b> (intensity) <b>ขนาดพื้นที่</b> (size) <b>ระยะเวลา</b> (duration) และ<b>ความถี่</b> (frequency)</p>
         <p>หลังการรบกวน พื้นที่โล่งจะมีไม้เบิกนำ (pioneer species) เช่น หญ้า สาบเสือ พืชตระกูลถั่ว เข้ามาภายใน 2–3 เดือน ไม้พุ่มตามมาใน 6 เดือนถึง 1 ปี และไม้ใหญ่ในอีกหลายปี เรียกว่า<b>การเปลี่ยนแปลงแทนที่ทุติยภูมิ</b> (secondary succession)</p>
-        <p>การสำรวจใช้แนว <b>belt transect</b> 2 เส้นทาง เพื่อให้ความรู้แก่นักเรียนและผู้สนใจ และเตรียมข้อมูลพัฒนาเป็น<b>พื้นที่อนุรักษ์ความหลากหลายทางชีวภาพนอกเขตพื้นที่คุ้มครอง</b> (Other Effective Area-based Conservation Measures: OECMs)</p>
+        <p>การสำรวจใช้แนว <b>belt transect</b> 3 เส้นทาง เพื่อให้ความรู้แก่นักเรียนและผู้สนใจ และเตรียมข้อมูลพัฒนาเป็น<b>พื้นที่อนุรักษ์ความหลากหลายทางชีวภาพนอกเขตพื้นที่คุ้มครอง</b> (Other Effective Area-based Conservation Measures: OECMs)</p>
       </div>
-      <figure><img src="assets/fig-trails.jpg" alt="ภาพถ่ายดาวเทียมเส้นทางศึกษาธรรมชาติเส้นที่ 1 และเส้นที่ 2 พร้อมเส้นทางที่บันทึกจากแอป" loading="lazy"><figcaption>ภาพที่ 6 เส้นทางสำหรับศึกษาระบบนิเวศ เส้นที่ 1 และเส้นที่ 2</figcaption></figure>
+      <figure><img src="assets/fig-trails.jpg" alt="ภาพถ่ายดาวเทียมเส้นทางศึกษาธรรมชาติเส้นที่ 1 และเส้นที่ 2 พร้อมเส้นทางที่บันทึกจากแอป" loading="lazy"><figcaption>ภาพที่ 6 เส้นทางที่ 1 และเส้นทางที่ 2</figcaption></figure>
     </div>
+    <figure><img src="assets/fig-trail3.jpg" alt="ภาพถ่ายมุมสูงของพื้นที่จุฬาฯ สระบุรี เส้นสีแดงแสดงเส้นทางที่ 3 เริ่มจากอาคารมุมซ้ายล่าง ขึ้นไปตามแนวป่าทางทิศเหนือ ผ่านแปลงหญ้าและบ่อน้ำ ไปจนสุดทางด้านขวาบน" loading="lazy"><figcaption>ภาพที่ 7 เส้นทางที่ 3 (เส้นสีแดง) ภาพถ่ายมุมสูง</figcaption></figure>
     <div class="card">
       <h3>สิ่งที่ต้องบันทึกตามเส้นทาง</h3>
       <div class="tbl-wrap"><table><thead><tr><th>หัวข้อ</th><th>สิ่งที่บันทึก</th><th>เครื่องมือ</th></tr></thead><tbody>
@@ -654,11 +693,11 @@ D = GBH ÷ (22/7)</div>
     <div class="lib" id="libBooks"></div>
     <h3>วิดีโอประกอบ</h3>
     <div class="vid">
-      <div class="yt" id="yt0" data-id="aUwCIg69vh8"><button type="button" aria-label="เล่นวิดีโอประกอบ ชุดที่ 1"><img src="https://i.ytimg.com/vi/aUwCIg69vh8/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="play"></span></button></div>
+      <div class="yt" id="yt0" data-id="aUwCIg69vh8"><button type="button" aria-label="เล่นวิดีโอ การวัดต้นไม้เพื่อคำนวณการกักเก็บคาร์บอน"><img src="https://i.ytimg.com/vi/aUwCIg69vh8/hqdefault.jpg" alt="" loading="lazy" onerror="this.remove()"><span class="play"></span></button></div>
       <div class="card">
         <span class="tag">YouTube</span>
-        <h4>วิดีโอประกอบปฏิบัติการภาคสนาม ชุดที่ 1</h4>
-        <p class="small muted">ดูก่อนออกภาคสนาม แตะภาพเพื่อเล่นในหน้านี้ หรือเปิดใน YouTube</p>
+        <h4>การวัดต้นไม้เพื่อคำนวณการกักเก็บคาร์บอน</h4>
+        <p class="small muted">มาตรฐาน T-VER และ LESS · วิธีวัดความโตและความสูงของต้นไม้ ดูก่อนออกภาคสนาม</p>
         <div class="row"><a class="btn ghost" href="https://www.youtube.com/watch?v=aUwCIg69vh8" target="_blank" rel="noopener">เปิดใน YouTube</a></div>
       </div>
     </div>
@@ -904,6 +943,20 @@ const BOOKS=[
  ['book-bats.pdf','ค้างคาว','ธงชัย งามประเสริฐวงศ์ และคณะ','5.7 MB','cover-bats.jpg']];
 function lib(id,arr){$(id).innerHTML=arr.map(([f,t,by,sz,cov,txt])=>`<a class="doc" href="docs/${f}" target="_blank" rel="noopener"><div class="cov${cov?'':' txt'}">${cov?`<img src="assets/${cov}" alt="" loading="lazy">`:esc(txt)}</div><div class="meta"><h4>${esc(t)}</h4><span class="by">${esc(by)}</span><span class="dl">${f.endsWith('.xlsx')?'XLSX':'PDF'} · ${sz}</span></div></a>`).join('')}
 lib('libMain',MAIN);lib('libBooks',BOOKS);
+
+/* ---------- briefing slides ---------- */
+(function(){const T=["การปฏิบัติงานในภาคสนาม วิชา 2303222", "กำหนดการ วันศุกร์ที่ 23 ตุลาคม 2569", "กำหนดการ วันศุกร์ที่ 23 ตุลาคม 2569 (ต่อ)", "กำหนดการ วันเสาร์ที่ 24 ตุลาคม 2569", "สถานที่ จุฬาลงกรณ์มหาวิทยาลัย สระบุรี", "ผังพื้นที่และอ่างเก็บน้ำ", "ห้องพักฝ้ายคำ 1–2", "ห้องพักฝ้ายคำ 1", "ห้องพัก common", "การจัดนิสิตเข้าห้องพัก", "การจัดนิสิตขึ้นรถ", "ความปลอดภัยบนรถบัส", "การรับประทานอาหาร", "", "กล่องปฐมพยาบาล", "ข้อห้ามสำคัญ", "พิธีสักการะพระบรมราชานุสาวรีย์ ร.5", "บรรยาย OECM และ LESS", "เส้นทางที่ 1 และ 2", "เส้นทางที่ 3", "สภาพเส้นทาง", "", "การเตรียมสภาพร่างกาย", "Special trip 23 ต.ค. 2569", "สัตว์มีพิษ", "การศึกษาสังคมพืชในแปลงถาวร", "คู่มือปฏิบัติการภาคสนาม", "สถานที่วางแปลง", "อาคารสระบุรี 4 · อุปกรณ์", "Soil fauna และการเก็บข้อมูล", "วิดีโอการวัดต้นไม้", "", "", "", "", "สิ่งที่นิสิตต้องเอาไป", "กิจกรรม: ทำสื่อวิดีโอ", "กิจกรรม: ทำสื่อวิดีโอ (ต่อ)", "การส่งงาน"];const N=T.length;let cur=0;const img=$('deckImg'),th=$('deckThumbs');
+const src=i=>'slides00/s-'+String(i+1).padStart(2,'0')+'.jpg',lab=i=>'สไลด์ที่ '+(i+1)+(T[i]?' '+T[i]:'');
+th.innerHTML=T.map((t,i)=>`<button type="button" role="tab" aria-label="${lab(i)}" data-i="${i}"><img src="${src(i)}" alt="" loading="lazy"></button>`).join('');
+function go(i){cur=(i+N)%N;img.src=src(cur);img.alt=lab(cur);$('deckNo').textContent=(cur+1)+' / '+N;$('deckTitle').textContent=T[cur]||'';
+  th.querySelectorAll('button').forEach((b,k)=>b.setAttribute('aria-current',k===cur?'true':'false'));const b=th.children[cur];if(b)th.scrollLeft=b.offsetLeft-th.clientWidth/2+b.offsetWidth/2;
+  const n=new Image();n.src=src((cur+1)%N)}
+th.addEventListener('click',e=>{const b=e.target.closest('button');if(b)go(+b.dataset.i)});
+['deckPrev','deckPrev2'].forEach(id=>$(id).addEventListener('click',()=>go(cur-1)));['deckNext','deckNext2'].forEach(id=>$(id).addEventListener('click',()=>go(cur+1)));
+$('deck').addEventListener('keydown',e=>{if(e.key==='ArrowRight'){go(cur+1);e.preventDefault()}if(e.key==='ArrowLeft'){go(cur-1);e.preventDefault()}});
+let x0=null;const st=img.parentElement;st.addEventListener('touchstart',e=>{x0=e.touches[0].clientX},{passive:true});st.addEventListener('touchend',e=>{if(x0===null)return;const dx=e.changedTouches[0].clientX-x0;if(Math.abs(dx)>40)go(cur+(dx<0?1:-1));x0=null});
+$('deckFull').addEventListener('click',()=>{const el=st;try{(document.fullscreenElement?document.exitFullscreen():(el.requestFullscreen||el.webkitRequestFullscreen).call(el))}catch(e){window.open(src(cur),'_blank')}});
+go(0)})();
 
 /* ---------- video (load player on tap) ---------- */
 document.querySelectorAll('.yt').forEach(box=>{const b=box.querySelector('button');b.addEventListener('click',()=>{const f=document.createElement('iframe');
