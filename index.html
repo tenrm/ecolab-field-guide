@@ -173,6 +173,16 @@ textarea{font-family:var(--f-mono);font-size:13px;min-height:190px;resize:vertic
 footer{border-top:1px solid var(--line);background:var(--paper)}
 footer .in{max-width:1240px;margin:0 auto;padding-block:28px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:10px;font-size:14px;color:var(--muted)}
 footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:var(--ink)}
+.sched{list-style:none;margin:0;padding:0;display:grid}
+.sched li{display:grid;grid-template-columns:62px minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 6px;border-top:1px solid var(--line)}
+.sched li:first-child{border-top:0}
+.sched .st{font-family:var(--f-mono);font-variant-numeric:tabular-nums;color:var(--soil);font-size:14.5px}
+.sched .sd{font-size:15px;line-height:1.55}
+.sched .sk{font-size:12px;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.sched .k-ภาคสนาม{border-color:var(--forest);color:var(--forest);font-weight:600}
+.sched li.now{background:var(--soil-soft);border-radius:6px;box-shadow:inset 3px 0 0 var(--soil)}
+.sched li.done .sd,.sched li.done .st{opacity:.55}
+.nowline{font-size:14px}
 .deck{display:grid;gap:12px}
 .stage{position:relative;aspect-ratio:16/9;max-width:100%;background:#0f1411;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;border:0;border-radius:0;background:#fff}
@@ -229,6 +239,7 @@ footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:va
     <p class="toc-title">สารบัญ</p>
     <ol id="tocList">
       <li><a href="#briefing"><span class="n">00</span>สไลด์แนะนำ</a></li>
+      <li><a href="#schedule"><span class="n">00.1</span>กำหนดการ</a></li>
       <li><a href="#overview"><span class="n">01</span>ภาพรวม</a></li>
       <li><a href="#site"><span class="n">02</span>พื้นที่ศึกษา</a></li>
       <li><a href="#prep"><span class="n">03</span>อุปกรณ์</a></li>
@@ -266,6 +277,18 @@ footer .sup{font-family:var(--f-display);font-weight:600;font-size:18px;color:va
       </div>
       <div class="thumbs" id="deckThumbs" role="tablist" aria-label="เลือกสไลด์"></div>
     </div>
+  </section>
+
+  <!-- 00.1 -->
+  <section class="sec" id="schedule">
+    <div class="sec-head"><span class="sec-no">00.1 · SCHEDULE</span><h2>กำหนดการ 23–24 ตุลาคม 2569</h2></div>
+    <p class="prose">โครงการปฏิบัติการภาคสนามด้านธรรมชาติวิทยา ครั้งที่ 2 ปีงบประมาณ 2570 ภายใต้กิจกรรมการพัฒนาพื้นที่จุฬาลงกรณ์มหาวิทยาลัย จังหวัดสระบุรี เพื่อการเรียนการสอนธรรมชาติวิทยา ณ จุฬาลงกรณ์มหาวิทยาลัย สระบุรี ต.ชำผักแพว อ.แก่งคอย จ.สระบุรี</p>
+    <p class="note nowline" id="schedNow" hidden></p>
+    <div class="grid2">
+      <div class="card sday"><h3>วันศุกร์ที่ 23 ตุลาคม 2569</h3><ol class="sched"><li data-t="2026-10-23T06:00:00+07:00"><span class="st">06:00</span><span class="sd">จัดเตรียมและขนสัมภาระขึ้นรถ</span><span class="sk k-เดินทาง">เดินทาง</span></li><li data-t="2026-10-23T07:00:00+07:00"><span class="st">07:00</span><span class="sd">เดินทางออกจากจุฬาลงกรณ์มหาวิทยาลัย</span><span class="sk k-เดินทาง">เดินทาง</span></li><li data-t="2026-10-23T10:45:00+07:00"><span class="st">10:45</span><span class="sd">ถึงพื้นที่จุฬาลงกรณ์มหาวิทยาลัย อำเภอแก่งคอย จังหวัดสระบุรี</span><span class="sk k-เดินทาง">เดินทาง</span></li><li data-t="2026-10-23T11:00:00+07:00"><span class="st">11:00</span><span class="sd">สักการะพระบรมราชานุสาวรีย์ พระบาทสมเด็จพระจุลจอมเกล้าเจ้าอยู่หัว (วันปิยมหาราช)</span><span class="sk k-พิธี">พิธี</span></li><li data-t="2026-10-23T11:30:00+07:00"><span class="st">11:30</span><span class="sd">ประชุมชี้แจงกำหนดการทำงาน แจกกุญแจห้อง และเข้าที่พักเพื่อเตรียมตัวออกภาคสนาม</span><span class="sk k-ชี้แจง">ชี้แจง</span></li><li data-t="2026-10-23T12:00:00+07:00"><span class="st">12:00</span><span class="sd">รับประทานอาหารกลางวัน</span><span class="sk k-อาหาร">อาหาร</span></li><li data-t="2026-10-23T13:00:00+07:00"><span class="st">13:00</span><span class="sd">บรรยายพิเศษ: การพัฒนาพื้นที่จุฬา-สระบุรี เป็นพื้นที่อนุรักษ์ (OECMs) และโครงการ LESS</span><span class="sk k-บรรยาย">บรรยาย</span></li><li data-t="2026-10-23T14:00:00+07:00"><span class="st">14:00</span><span class="sd">ประชุมชี้แจงแนวปฏิบัติและเส้นทางสำรวจ OECMs</span><span class="sk k-ชี้แจง">ชี้แจง</span></li><li data-t="2026-10-23T14:30:00+07:00"><span class="st">14:30</span><span class="sd">สำรวจเส้นทางศึกษา OECMs · ทำ checklist ความหลากชนิดของพืชและสัตว์ในพื้นที่สระบุรีด้วย iNaturalist</span><span class="sk k-ภาคสนาม">ภาคสนาม</span></li><li data-t="2026-10-23T18:00:00+07:00"><span class="st">18:00</span><span class="sd">รับประทานอาหารเย็น</span><span class="sk k-อาหาร">อาหาร</span></li><li data-t="2026-10-23T19:30:00+07:00"><span class="st">19:30</span><span class="sd">สำรวจสัตว์สะเทินน้ำสะเทินบกและสัตว์เลื้อยคลาน / ค้างคาว / แมลงกลางคืนด้วยกับดักแสงไฟ และหิ่งห้อย</span><span class="sk k-ภาคสนาม">ภาคสนาม</span></li><li data-t="2026-10-23T22:00:00+07:00"><span class="st">22:00</span><span class="sd">เข้าที่พักและพักผ่อนตามอัธยาศัย</span><span class="sk k-พัก">พัก</span></li></ol></div>
+      <div class="card sday"><h3>วันเสาร์ที่ 24 ตุลาคม 2569</h3><ol class="sched"><li data-t="2026-10-24T06:00:00+07:00"><span class="st">06:00</span><span class="sd">สำรวจนกประจำพื้นที่จุฬาสระบุรี</span><span class="sk k-ภาคสนาม">ภาคสนาม</span></li><li data-t="2026-10-24T07:00:00+07:00"><span class="st">07:00</span><span class="sd">รับประทานอาหารเช้า (โรงอาหารบริเวณหอพัก)</span><span class="sk k-อาหาร">อาหาร</span></li><li data-t="2026-10-24T08:00:00+07:00"><span class="st">08:00</span><span class="sd">ประชุมชี้แจงแนวปฏิบัติ</span><span class="sk k-ชี้แจง">ชี้แจง</span></li><li data-t="2026-10-24T08:30:00+07:00"><span class="st">08:30</span><span class="sd">วางแปลงและสำรวจสังคมสิ่งมีชีวิตในพื้นที่สวนสมุนไพรอาจารย์บุญรอด</span><span class="sk k-ภาคสนาม">ภาคสนาม</span></li><li data-t="2026-10-24T11:00:00+07:00"><span class="st">11:00</span><span class="sd">จัดเก็บ รักษาสภาพ และบันทึกตัวอย่างสิ่งมีชีวิตจากการสำรวจ</span><span class="sk k-ภาคสนาม">ภาคสนาม</span></li><li data-t="2026-10-24T12:00:00+07:00"><span class="st">12:00</span><span class="sd">รับประทานอาหารกลางวัน</span><span class="sk k-อาหาร">อาหาร</span></li><li data-t="2026-10-24T13:00:00+07:00"><span class="st">13:00</span><span class="sd">จัดเก็บอุปกรณ์และสัมภาระ / ทำความสะอาดร่างกาย</span><span class="sk k-เดินทาง">เดินทาง</span></li><li data-t="2026-10-24T14:00:00+07:00"><span class="st">14:00</span><span class="sd">เดินทางออกจากจุฬาลงกรณ์มหาวิทยาลัย สระบุรี</span><span class="sk k-เดินทาง">เดินทาง</span></li><li data-t="2026-10-24T17:00:00+07:00"><span class="st">17:00</span><span class="sd">ถึงจุฬาลงกรณ์มหาวิทยาลัย กรุงเทพฯ / จัดเก็บอุปกรณ์ และทำปฏิบัติการเรื่องดิน</span><span class="sk k-เดินทาง">เดินทาง</span></li></ol></div>
+    </div>
+    <div class="row"><span class="small muted">กำหนดการอาจเปลี่ยนแปลงตามความเหมาะสม</span><a class="btn ghost" href="docs/ecolab-fieldtrip-schedule-2569.pdf" target="_blank" rel="noopener">ดาวน์โหลดกำหนดการ (PDF)</a></div>
   </section>
 
   <!-- 01 -->
@@ -945,6 +968,16 @@ const BOOKS=[
  ['book-bats.pdf','ค้างคาว','ธงชัย งามประเสริฐวงศ์ และคณะ','5.7 MB','cover-bats.jpg']];
 function lib(id,arr){$(id).innerHTML=arr.map(([f,t,by,sz,cov,txt])=>`<a class="doc" href="docs/${f}" target="_blank" rel="noopener"><div class="cov${cov?'':' txt'}">${cov?`<img src="assets/${cov}" alt="" loading="lazy">`:esc(txt)}</div><div class="meta"><h4>${esc(t)}</h4><span class="by">${esc(by)}</span><span class="dl">${f.endsWith('.xlsx')?'XLSX':'PDF'} · ${sz}</span></div></a>`).join('')}
 lib('libMain',MAIN);lib('libBooks',BOOKS);
+
+/* ---------- schedule: highlight what is on now ---------- */
+(function(){const items=[...document.querySelectorAll('.sched li')];if(!items.length)return;
+function tick(){const now=Date.now();let cur=null;items.forEach((li,i)=>{const t=Date.parse(li.dataset.t);const nx=items[i+1]&&items[i+1].closest('ol')===li.closest('ol')?Date.parse(items[i+1].dataset.t):t+3*3600e3;
+  li.classList.toggle('done',now>=nx);const on=now>=t&&now<nx;li.classList.toggle('now',on);if(on)cur=li});
+  const el=$('schedNow'),first=Date.parse(items[0].dataset.t);
+  if(cur){el.hidden=false;el.innerHTML='<b>ตอนนี้:</b> '+cur.querySelector('.st').textContent+' น. · '+cur.querySelector('.sd').textContent}
+  else if(now<first){const d=Math.ceil((first-now)/864e5);el.hidden=false;el.innerHTML='อีก <b>'+d+' วัน</b> ออกเดินทาง · ขนสัมภาระขึ้นรถ 06:00 น. วันศุกร์ที่ 23 ตุลาคม 2569'}
+  else el.hidden=true}
+tick();setInterval(tick,60000)})();
 
 /* ---------- briefing slides ---------- */
 (function(){const T=["การปฏิบัติงานในภาคสนาม วิชา 2303222", "กำหนดการ วันศุกร์ที่ 23 ตุลาคม 2569", "กำหนดการ วันศุกร์ที่ 23 ตุลาคม 2569 (ต่อ)", "กำหนดการ วันเสาร์ที่ 24 ตุลาคม 2569", "สถานที่ จุฬาลงกรณ์มหาวิทยาลัย สระบุรี", "ผังพื้นที่และอ่างเก็บน้ำ", "ห้องพักฝ้ายคำ 1–2", "ห้องพักฝ้ายคำ 1", "ห้องพัก common", "การจัดนิสิตเข้าห้องพัก", "การจัดนิสิตขึ้นรถ", "ความปลอดภัยบนรถบัส", "การรับประทานอาหาร", "", "กล่องปฐมพยาบาล", "ข้อห้ามสำคัญ", "พิธีสักการะพระบรมราชานุสาวรีย์ ร.5", "บรรยาย OECM และ LESS", "เส้นทางที่ 1 และ 2", "เส้นทางที่ 3", "สภาพเส้นทาง", "", "การเตรียมสภาพร่างกาย", "Special trip 23 ต.ค. 2569", "สัตว์มีพิษ", "การศึกษาสังคมพืชในแปลงถาวร", "คู่มือปฏิบัติการภาคสนาม", "สถานที่วางแปลง", "อาคารสระบุรี 4 · อุปกรณ์", "Soil fauna และการเก็บข้อมูล", "วิดีโอการวัดต้นไม้", "", "", "", "", "สิ่งที่นิสิตต้องเอาไป", "กิจกรรม: ทำสื่อวิดีโอ", "กิจกรรม: ทำสื่อวิดีโอ (ต่อ)", "การส่งงาน"];const N=T.length;let cur=0;const img=$('deckImg'),th=$('deckThumbs');
